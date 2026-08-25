@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rack &amp; Reference — Exercise Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#17181A;
+    --surface:#1F2123;
+    --surface-2:#26282B;
+    --surface-3:#2C2E31;
+    --border:#313336;
+    --border-soft:#2A2C2E;
+    --text:#EDEDE9;
+    --text-dim:#9A9A94;
+    --text-faint:#6E706C;
+    --accent:#C1442D;
+    --accent-soft:rgba(193,68,45,0.16);
+    --accent-line:rgba(193,68,45,0.4);
+    --library:#4C7A96;
+    --library-soft:rgba(76,122,150,0.16);
+    --mobility:#7A9B76;
+    --mobility-soft:rgba(122,155,118,0.16);
+    --focus:#E8B33D;
+    --radius:3px;
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  a{color:inherit;}
+
+  :focus-visible{
+    outline:2px solid var(--focus);
+    outline-offset:2px;
+  }
+
+  /* ---------- Header ---------- */
+  header.hero{
+    position:relative;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 2px, transparent 2px, transparent 10px),
+      linear-gradient(180deg, #1B1C1E 0%, #17181A 100%);
+    border-bottom:1px solid var(--border);
+    padding:28px 20px 20px;
+  }
+  .hero-inner{
+    max-width:1120px;
+    margin:0 auto;
+  }
+  .plate-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:5px 12px 5px 8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    color:var(--text-dim);
+    margin-bottom:14px;
+  }
+  .plate-tag .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    font-size:clamp(32px,6vw,48px);
+    margin:0 0 8px;
+    color:var(--text);
+  }
+  .hero p.sub{
+    color:var(--text-dim);
+    font-size:15px;
+    max-width:52ch;
+    margin:0 0 22px;
+  }
+
+  /* ---------- Search ---------- */
+  .searchbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    max-width:640px;
+  }
+  .searchbar:focus-within{
+    border-color:var(--accent-line);
+  }
+  .searchbar svg{flex:none; color:var(--text-faint);}
+  .searchbar input{
+    flex:1;
+    background:none;
+    border:none;
+    outline:none;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+  }
+  .searchbar input::placeholder{color:var(--text-faint);}
+  .searchbar .clear-btn{
+    background:none;border:none;color:var(--text-faint);
+    cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;
+    padding:4px 6px;
+    display:none;
+  }
+  .searchbar .clear-btn.show{display:inline-block;}
+  .searchbar .clear-btn:hover{color:var(--text);}
+
+  /* ---------- Filter rail ---------- */
+  .filters{
+    max-width:1120px;
+    margin:0 auto;
+    padding:18px 20px 0;
+  }
+  .filter-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .filter-row .row-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    display:flex;
+    align-items:center;
+    padding-right:4px;
+    width:100%;
+    margin-bottom:2px;
+  }
+  .chip{
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--text-dim);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:7px 14px;
+    cursor:pointer;
+    user-select:none;
+    transition:background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+    white-space:nowrap;
+  }
+  .chip:hover{border-color:var(--text-faint); color:var(--text);}
+  .chip.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  .chip .count{
+    opacity:0.65;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    margin-left:5px;
+  }
+  .group-chip.active[data-group="Muscle Library"]{background:var(--library); border-color:var(--library);}
+  .group-chip.active[data-group="Mobility & Recovery"]{background:var(--mobility); border-color:var(--mobility);}
+  .group-chip.active[data-group="daily"]{background:var(--focus); border-color:var(--focus); color:#1a1a1a;}
+
+  /* ---------- Results meta ---------- */
+  .results-meta{
+    max-width:1120px;
+    margin:0 auto;
+    padding:16px 20px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    color:var(--text-faint);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.03em;
+  }
+
+  /* ---------- Grid ---------- */
+  main{
+    max-width:1120px;
+    margin:0 auto;
+    padding:14px 20px 80px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:14px;
+    margin-top:14px;
+  }
+
+  .card{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 16px 14px;
+    border-left:3px solid var(--border);
+  }
+  .card[data-group="Workout Days"]{border-left-color:var(--accent);}
+  .card[data-group="Muscle Library"]{border-left-color:var(--library);}
+  .card[data-group="Mobility & Recovery"]{border-left-color:var(--mobility);}
+
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .card-top-text{flex:1; min-width:0;}
+  .diagram-link{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    margin-top:9px;
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--library);
+    text-decoration:none;
+    border:1px solid var(--border-soft);
+    background:var(--surface-2);
+    border-radius:var(--radius);
+    padding:6px 10px;
+  }
+  .diagram-link:hover{border-color:var(--library);}
+  .diagram-link.fallback{color:var(--text-dim);}
+  .diagram-link svg{flex:none;}
+  .card-name{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:18px;
+    letter-spacing:0.005em;
+    color:var(--text);
+    margin:0 0 4px;
+  }
+  .card-section{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  .daily-badge{
+    flex:none;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--focus);
+    color:#1a1a1a;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 8px;
+    margin:10px 0 4px;
+  }
+  .pill{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--text-dim);
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius);
+    padding:3px 8px;
+  }
+  .pill.strong{color:var(--text); border-color:var(--border);}
+  .category-tag{
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    font-weight:500;
+    color:var(--accent);
+    background:var(--accent-soft);
+    border-radius:var(--radius);
+    padding:3px 8px;
+  }
+  .card[data-group="Muscle Library"] .category-tag{color:var(--library); background:var(--library-soft);}
+  .card[data-group="Mobility & Recovery"] .category-tag{color:var(--mobility); background:var(--mobility-soft);}
+
+  .variant-line{
+    font-size:13px;
+    color:var(--text-dim);
+    margin-top:8px;
+    line-height:1.45;
+  }
+  .variant-line b{color:var(--text-dim); font-weight:600;}
+
+  .cross-ref{
+    font-size:12px;
+    color:#a8763a;
+    background:rgba(168,118,58,0.12);
+    border:1px solid rgba(168,118,58,0.3);
+    border-radius:6px;
+    padding:6px 10px;
+    margin-top:10px;
+    line-height:1.4;
+  }
+
+  .day-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:8px;
+  }
+  .day-tag{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:3px 7px;
+  }
+
+  .workout-builder{
+    max-width:960px;
+    margin:0 auto;
+    padding:0 20px;
+  }
+  .wb-toggle{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:12px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:16px;
+  }
+  .wb-toggle:hover{border-color:var(--accent);}
+  .wb-panel{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:14px;
+    margin-top:8px;
+  }
+  .wb-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+  .wb-days{display:flex; gap:8px;}
+  .wb-day-btn{
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    font-size:13px;
+    padding:8px 12px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .wb-day-btn.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#1a1a1a;
+    font-weight:600;
+  }
+  #wbMinutes{
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:8px 10px;
+    border-radius:6px;
+    width:80px;
+    font-size:14px;
+  }
+  .wb-build-btn{
+    background:var(--accent);
+    border:none;
+    color:#1a1a1a;
+    font-weight:700;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    padding:9px 18px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .wb-summary{
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.5;
+    border-top:1px solid var(--border);
+    padding-top:10px;
+    margin-top:4px;
+  }
+  .wb-summary .over-budget{color:#e07a5f; font-weight:600;}
+  .wb-summary .exit-btn{
+    display:inline-block;
+    margin-top:8px;
+    background:none;
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    font-size:12px;
+    padding:5px 10px;
+    border-radius:5px;
+    cursor:pointer;
+  }
+
+  .toggle-btn{
+    margin-top:12px;
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius);
+    color:var(--text-dim);
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:500;
+    padding:8px 10px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:background 0.12s ease;
+  }
+  .toggle-btn:hover{background:var(--surface-3); color:var(--text);}
+  .toggle-btn svg{transition:transform 0.15s ease;}
+  .card.expanded .toggle-btn svg{transform:rotate(180deg);}
+
+  .details{
+    display:none;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--border-soft);
+  }
+  .card.expanded .details{display:block;}
+  .details h4{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin:0 0 6px;
+  }
+  .details p{
+    font-size:13.5px;
+    color:var(--text-dim);
+    white-space:pre-line;
+    margin:0 0 14px;
+    line-height:1.55;
+  }
+  .details p:last-child{margin-bottom:0;}
+  .details .watchout p{color:#D8C79A;}
+  .details .watchout h4{color:var(--focus);}
+
+  /* ---------- Weight log ---------- */
+  .log-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--border-soft);
+    flex-wrap:wrap;
+  }
+  .log-last{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--text-dim);
+    flex:none;
+    white-space:nowrap;
+  }
+  .log-last b{color:var(--text); font-weight:600;}
+  .log-last.empty{color:var(--text-faint);}
+  .log-inputs{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-left:auto;
+  }
+  .log-inputs input{
+    width:52px;
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius);
+    color:var(--text);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    padding:5px 6px;
+    text-align:center;
+  }
+  .log-inputs input::-webkit-outer-spin-button,
+  .log-inputs input::-webkit-inner-spin-button{margin:0;}
+  .log-inputs span.x{color:var(--text-faint); font-size:12px;}
+  .log-save{
+    background:var(--surface-3);
+    border:1px solid var(--border);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    font-weight:600;
+    border-radius:var(--radius);
+    padding:6px 12px;
+    cursor:pointer;
+  }
+  .log-save:hover{border-color:var(--accent-line);}
+  .log-save.saved{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+  /* ---------- Backup bar ---------- */
+  .backup-bar{
+    max-width:1120px;
+    margin:0 auto;
+    padding:4px 20px 0;
+    display:flex;
+    gap:14px;
+    align-items:center;
+  }
+  .backup-bar button{
+    background:none;
+    border:none;
+    color:var(--text-faint);
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:500;
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+    padding:4px 0;
+  }
+  .backup-bar button:hover{color:var(--text-dim);}
+  .backup-bar .backup-msg{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--mobility);
+  }
+
+  mark{
+    background:var(--accent-soft);
+    color:var(--text);
+    border-radius:2px;
+    padding:0 1px;
+  }
+
+  .empty-state{
+    text-align:center;
+    padding:70px 20px;
+    color:var(--text-faint);
+  }
+  .empty-state h3{
+    font-family:'Oswald',sans-serif;
+    color:var(--text-dim);
+    font-size:20px;
+    margin:0 0 6px;
+    text-transform:uppercase;
+  }
+  .empty-state p{font-size:14px; max-width:40ch; margin:0 auto;}
+
+  footer{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 20px 50px;
+    color:var(--text-faint);
+    font-size:12px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  @media (max-width:600px){
+    .grid{grid-template-columns:1fr;}
+    header.hero{padding:22px 16px 18px;}
+    .filters{padding:16px 16px 0;}
+    main{padding:12px 16px 60px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="plate-tag"><span class="dot"></span>119 EXERCISES · 3 WORKOUT DAYS · 9 MUSCLE GROUPS</div>
+    <h1>Rack &amp; Reference</h1>
+    <p class="sub">Your full training programme, searchable. Find a move, see the cue, get back under the bar.</p>
+    <div class="searchbar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input id="searchInput" type="text" placeholder="Search exercises, cues, muscles…" autocomplete="off">
+      <button class="clear-btn" id="clearBtn">Clear</button>
+    </div>
+  </div>
+</header>
+
+<div class="workout-builder">
+  <button class="wb-toggle" id="wbToggle">⏱ Build a workout by time</button>
+  <div class="wb-panel" id="wbPanel" style="display:none;">
+    <div class="wb-row">
+      <span class="row-label">Day</span>
+      <div class="wb-days" id="wbDays"></div>
+    </div>
+    <div class="wb-row">
+      <span class="row-label">Minutes available</span>
+      <input type="number" id="wbMinutes" min="5" max="120" value="45" step="5">
+      <button class="wb-build-btn" id="wbBuildBtn">Build</button>
+    </div>
+    <div id="wbSummary"></div>
+  </div>
+</div>
+
+<div class="filters">
+  <div class="filter-row" id="groupRow"></div>
+  <div class="filter-row" id="sectionRow"></div>
+  <div class="filter-row" id="programmeRow"></div>
+  <div class="filter-row" id="equipmentRow"></div>
+</div>
+
+<div class="results-meta">
+  <span id="resultCount">— exercises</span>
+  <span id="activeFilterLabel"></span>
+</div>
+
+<div class="backup-bar">
+  <button id="backupBtn" type="button">Back up weight log</button>
+  <button id="restoreBtn" type="button">Restore from backup</button>
+  <input type="file" id="restoreFile" accept="application/json" style="display:none;">
+  <span class="backup-msg" id="backupMsg"></span>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <h3>No matches</h3>
+    <p id="emptyText">Nothing found. Try a shorter search term or clear the active filters.</p>
+  </div>
+</main>
+
+<footer>Built from your training programme workbook · full step-by-step cues on every card</footer>
+
+<script>
+const DATA = [{"id":1,"exercise":"Back Squat","gymVariant":"","homeVariant":"","variants":"Front Squat (more upright torso, less lower-back stress); Box Squat (control depth while rebuilding confidence)","setsReps":"4 x 4-6","rest":"3 min","execution":"Setup: Set the bar in the rack at roughly sternum height. Step under it, bar resting on your upper traps/rear delts (not the neck), grip just outside shoulder width. Unrack, step back 2-3 steps, feet shoulder-width, toes turned out slightly.\nDescent: Take a big breath into your belly and brace hard (like bracing for a punch). Break at the hips and knees together, sit back and down, keep the chest up and the bar over mid-foot throughout. Knees track in the same direction as your toes.\nBottom: Reach depth where the hip crease drops at or below the top of the knee, without the lower back rounding.\nAscent: Drive through the whole foot, push the floor away, hips and shoulders rise together (if hips shoot up first, you've lost tightness - reset next rep). Exhale near the top once past the hardest part of the lift.","watchouts":"Lower-back rounding ('butt wink') at the bottom is the main injury risk - if it happens consistently, you've gone below your current mobility limit; stop a few cm higher. Don't let knees cave inward. Keep the bar over mid-foot, not your toes, throughout.","dailyOrder":null,"noEquipment":false,"crossRef":["Muscle Library \u2192 Quads (See Day sheets / 3 x 4-8)"],"contexts":[{"sectionGroup":"Workout Days","section":"Day 1 (Squat Focus)","category":"Primary"}],"muscleGroup":"Quads","dayTags":["Day 1 (Squat Focus)"],"sets":4,"restSec":180},{"id":2,"exercise":"Back Squat","gymVariant":"Squat rack (your Day 1 primary lift)","homeVariant":"Goblet squat with a heavy backpack/bag, or bodyweight if nothing available","variants":"","setsReps":"See Day sheets / 3 x 4-8","rest":"","execution":"Setup: Set the bar in the rack at roughly sternum height. Step under it, bar resting on your upper traps/rear delts (not the neck), grip just outside shoulder width. Unrack, step back 2-3 steps, feet shoulder-width, toes turned out slightly.\nDescent: Take a big breath into your belly and brace hard (like bracing for a punch). Break at the hips and knees together, sit back and down, keep the chest up and the bar over mid-foot throughout. Knees track in the same direction as your toes.\nBottom: Reach depth where the hip crease drops at or below the top of the knee, without the lower back rounding.\nAscent: Drive through the whole foot, push the floor away, hips and shoulders rise together (if hips shoot up first, you've lost tightness - reset next rep). Exhale near the top once past the hardest part of the lift.","watchouts":"Lower-back rounding ('butt wink') at the bottom is the main injury risk - if it happens consistently, you've gone below your current mobility limit; stop a few cm higher. Don't let knees cave inward. Keep the bar over mid-foot, not your toes, throughout.","dailyOrder":null,"noEquipment":false,"crossRef":["Workout Days \u2192 Day 1 (Squat Focus) (4 x 4-6)"],"contexts":[{"sectionGroup":"Muscle Library","section":"Quads","category":"Knee-dominant compound"}],"muscleGroup":"Quads","dayTags":[],"sets":3,"restSec":60},{"id":3,"exercise":"Bench Press","gymVariant":"","homeVariant":"","variants":"Incline Dumbbell Press (more shoulder-friendly, more upper chest); Close-Grip Bench (more triceps)","setsReps":"3 x 6-10","rest":"2 min","execution":"Setup: Lie on the bench, eyes roughly under the bar. Pull shoulder blades together and down and pin them there, small natural arch in the lower back, feet flat and driving into the floor. Grip just wider than shoulder width.\nUnrack and descent: Unrack, move the bar over your chest, brace your core, lower under control to your lower chest/sternum, elbows tracking at roughly 45-75 degrees from your torso (not flared to 90).\nPress: Drive the bar back up in a slight arc toward your face, exhaling as you pass the hardest point, full lockout at the top without shrugging shoulders forward.","watchouts":"Don't let shoulders roll forward off the bench - this shifts load onto the front of the shoulder joint. Avoid bouncing the bar off the chest. Keep wrists stacked directly over elbows, not bent back.","dailyOrder":null,"noEquipment":false,"crossRef":["Workout Days \u2192 Day 2 (Bench Focus) (4 x 4-6)"],"contexts":[{"sectionGroup":"Workout Days","section":"Day 1 (Squat Focus)","category":"Secondary"}],"muscleGroup":"Chest","dayTags":["Day 1 (Squat Focus)"],"sets":3,"restSec":120},{"id":4,"exercise":"Bench Press","gymVariant":"","homeVariant":"","variants":"Spoto Press (pause an inch off the chest, builds control); Football Bar/neutral-grip press if shoulders feel cranky","setsReps":"4 x 4-6","rest":"3 min","execution":"Setup: Lie on the bench, eyes roughly under the bar. Pull shoulder blades together and down and pin them there, small natural arch in the lower back, feet flat and driving into the floor. Grip just wider than shoulder width.\nUnrack and descent: Unrack, move the bar over your chest, brace your core, lower under control to your lower chest/sternum, elbows tracking at roughly 45-75 degrees from your torso (not flared to 90).\nPress: Drive the bar back up in a slight arc toward your face, exhaling as you pass the hardest point, full lockout at the top without shrugging shoulders forward.","watchouts":"Watch for shoulder fatigue accumulating from Day 1 - if the shoulder feels irritated rather than just tired, drop the weight 10% rather than pushing through pain.","dailyOrder":null,"noEquipment":false,"crossRef":["Workout Days \u2192 Day 1 (Squat Focus) (3 x 6-10)"],"contexts":[{"sectionGroup":"Workout Days","section":"Day 2 (Bench Focus)","category":"Primary"}],"muscleGroup":"Chest","dayTags":["Day 2 (Bench Focus)"],"sets":4,"restSec":180},{"id":5,"exercise":"Chest-Supported Cable Row","gymVariant":"","homeVariant":"","variants":"Single-arm cable row (corrects side-to-side imbalance); Seated cable row if chest-support unavailable","setsReps":"3 x 8-15","rest":"90 sec","execution":"Setup: Chest against the pad, feet braced, grip the handles with a neutral or overhand grip.\nPull: Drive elbows back and squeeze shoulder blades together, pull the handle to your lower ribs, pause briefly at full contraction.\nReturn: Extend arms fully under control, feel a stretch across the upper back before starting the next rep.","watchouts":"Don't yank with momentum or lean back excessively to move more weight. Avoid shrugging the load up into your traps.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Workout Days","section":"Day 1 (Squat Focus)","category":"Isolation"}],"muscleGroup":"Back","dayTags":["Day 1 (Squat Focus)"],"sets":3,"restSec":90},{"id":6,"exercise":"Machine Leg Curl","gymVariant":"","homeVariant":"","variants":"Standing single-leg curl (unilateral, corrects imbalance)","setsReps":"3 x 10-15","rest":"75 sec","execution":"Setup: Adjust the pad so it sits just above your heels, hips flat against the bench/pad.\nCurl: Curl the pad toward your glutes by contracting the hamstrings, squeeze at the top.\nLower: Control the eccentric back to the start, don't let the weight stack drop.","watchouts":"Don't let your hips lift off the pad to cheat the weight up - this is the most common form breakdown on this machine.","dailyOrder":null,"noEquipment":false,"contexts":[{"sectionGroup":"Workout Days","section":"Day 1 (Squat Focus)","category":"Isolation"},{"sectionGroup":"Muscle Library","section":"Hamstrings & Glutes","category":"Hamstring isolation"}],"crossRef":null,"muscleGroup":"Hamstrings & Glutes","dayTags":["Day 1 (Squat Focus)"],"sets":3,"restSec":75},{"id":7,"exercise":"Cable Lateral Raise","gymVariant":"","homeVariant":"","variants":"Dumbbell lateral raise if cable rack is occupied","setsReps":"3 x 12-15","rest":"60 sec","execution":"Setup: Stand side-on to a low pulley, handle in the outside hand, slight bend in the elbow.\nRaise: Lead with the elbow, raise the arm out to roughly shoulder height, pause briefly.\nLower: Control the descent, don't let the weight stack slam down.","watchouts":"Don't use momentum/swing from the hips. Avoid raising above shoulder height, which brings the shoulder joint into an impingement-prone position.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Workout Days","section":"Day 1 (Squat Focus)","category":"Isolation"}],"muscleGroup":"Shoulders","dayTags":["Day 1 (Squat Focus)"],"sets":3,"restSec":60},{"id":8,"exercise":"Plank","gymVariant":"","homeVariant":"","variants":"Weighted plate on lower back once bodyweight is easy; RKC/long-lever plank for more difficulty","setsReps":"3 x 30-45 sec","rest":"45 sec","execution":"Setup: Forearms under shoulders, elbows stacked, legs extended, toes tucked.\nHold: Squeeze glutes, brace abs as if about to be punched, body in a straight line head to heels, breathe normally throughout - don't hold your breath.","watchouts":"Don't let hips sag toward the floor or pike up toward the ceiling.","dailyOrder":null,"noEquipment":true,"crossRef":["Muscle Library \u2192 Core (3 x 30-45 sec)","Mobility & Recovery \u2192 Lower Back Recovery (2-3 x 15-30 sec to start)"],"contexts":[{"sectionGroup":"Workout Days","section":"Day 1 (Squat Focus)","category":"Core"}],"muscleGroup":"Core","dayTags":["Day 1 (Squat Focus)"],"sets":3,"restSec":45},{"id":9,"exercise":"Plank","gymVariant":"Bodyweight, add a plate on the lower back once easy","homeVariant":"Bodyweight on the floor, or feet elevated on a chair for more difficulty","variants":"","setsReps":"3 x 30-45 sec","rest":"","execution":"Setup: Forearms under shoulders, elbows stacked, legs extended.\nHold: Brace like you're about to be punched, squeeze glutes, straight line head to heels, breathe normally.","watchouts":"Don't let hips sag (loses lower-back protection) or pike up (reduces core loading).","dailyOrder":null,"noEquipment":true,"crossRef":["Workout Days \u2192 Day 1 (Squat Focus) (3 x 30-45 sec)","Mobility & Recovery \u2192 Lower Back Recovery (2-3 x 15-30 sec to start)"],"contexts":[{"sectionGroup":"Muscle Library","section":"Core","category":"Anti-extension"}],"muscleGroup":"Core","dayTags":[],"sets":3,"restSec":60},{"id":10,"exercise":"Plank","gymVariant":"Bodyweight, add a plate on the lower back once easy","homeVariant":"Bodyweight on the floor","variants":"","setsReps":"2-3 x 15-30 sec to start","rest":"","execution":"Setup: Forearms under shoulders, elbows stacked, legs extended.\nHold: Brace gently, squeeze glutes, straight line head to heels, breathe normally throughout.","watchouts":"Start with shorter holds than you'd normally use and build up - this should feel like light bracing work, not a maximal-effort hold while healing.","dailyOrder":null,"noEquipment":true,"crossRef":["Workout Days \u2192 Day 1 (Squat Focus) (3 x 30-45 sec)","Muscle Library \u2192 Core (3 x 30-45 sec)"],"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Phase 1 - Foundational stability"}],"muscleGroup":"Core","dayTags":[],"sets":3,"restSec":60},{"id":11,"exercise":"Lying Leg Raise","gymVariant":"","homeVariant":"","variants":"Bench or floor at the gym; floor at home, no equipment needed","setsReps":"3 x 10-15","rest":"45 sec","execution":"Setup: Lie flat, hands under your lower back or at your sides, lower back pressed into the surface (posterior pelvic tilt).\nRaise: Lift straight or slightly bent legs to vertical without the lower back arching off the floor.\nLower: Lower under control only as far as you can maintain the pelvic tilt, then reset.","watchouts":"Stop the descent the moment your lower back starts to lift off the floor. Bend the knees more if a straight-leg version breaks form early.","dailyOrder":null,"noEquipment":true,"contexts":[{"sectionGroup":"Workout Days","section":"Day 1 (Squat Focus)","category":"Core"},{"sectionGroup":"Muscle Library","section":"Core","category":"Flexion (lower abs)"}],"crossRef":null,"muscleGroup":"Core","dayTags":["Day 1 (Squat Focus)"],"sets":3,"restSec":45},{"id":12,"exercise":"Romanian Deadlift","gymVariant":"","homeVariant":"","variants":"Trap-bar RDL (more knee-friendly, more natural bar path); Single-leg RDL (balance/unilateral work)","setsReps":"3 x 6-8","rest":"2 min","execution":"Setup: Hold the bar/dumbbells at hip height, feet hip-width, soft bend in the knees.\nHinge: Push your hips straight back while keeping the weight close to your legs, chest stays up, spine neutral, knee bend stays constant (don't squat it down).\nBottom: Lower until you feel a firm stretch in the hamstrings, typically mid-shin, not to the floor.\nReturn: Drive the hips forward to standing, squeeze glutes at the top, don't hyperextend the lower back.","watchouts":"The number one fault is rounding the lower back to chase more range of motion - stop the descent the moment your lower back wants to round, regardless of how far the bar has travelled.","dailyOrder":null,"noEquipment":false,"crossRef":["Muscle Library \u2192 Hamstrings & Glutes (See Day sheets / 3 x 6-10)"],"contexts":[{"sectionGroup":"Workout Days","section":"Day 2 (Bench Focus)","category":"Secondary"}],"muscleGroup":"Hamstrings & Glutes","dayTags":["Day 2 (Bench Focus)"],"sets":3,"restSec":120},{"id":13,"exercise":"Romanian Deadlift","gymVariant":"Barbell or dumbbells (your Day 2 secondary lift)","homeVariant":"Dumbbells, a loaded backpack, or bodyweight single-leg RDL for balance-driven resistance","variants":"","setsReps":"See Day sheets / 3 x 6-10","rest":"","execution":"Setup: Hold the weight at hip height, feet hip-width, soft bend in the knees.\nHinge: Push hips back keeping the weight close to your legs, chest up, spine neutral.\nBottom: Lower until you feel a firm hamstring stretch.\nReturn: Drive hips forward to standing, squeeze glutes.","watchouts":"Rounding the lower back to chase more range is the main fault - depth should be limited by your hamstring flexibility, not by ego.","dailyOrder":null,"noEquipment":false,"crossRef":["Workout Days \u2192 Day 2 (Bench Focus) (3 x 6-8)"],"contexts":[{"sectionGroup":"Muscle Library","section":"Hamstrings & Glutes","category":"Hip-dominant compound"}],"muscleGroup":"Hamstrings & Glutes","dayTags":[],"sets":3,"restSec":60},{"id":14,"exercise":"Lat Pulldown","gymVariant":"","homeVariant":"","variants":"Neutral-grip or close-grip pulldown (often more shoulder-friendly than wide overhand grip)","setsReps":"3 x 8-12","rest":"90 sec","execution":"Setup: Grip slightly wider than shoulders, thighs locked under the pads.\nPull: Lean back 10-15 degrees, pull the bar to your upper chest by driving elbows down and back, squeeze the lats at the bottom of the movement.\nReturn: Extend arms fully under control, feel a stretch through the lats.","watchouts":"Don't lean back excessively and turn it into a rowing motion. Avoid yanking the bar down with momentum.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Workout Days","section":"Day 2 (Bench Focus)","category":"Isolation"}],"muscleGroup":"Back","dayTags":["Day 2 (Bench Focus)"],"sets":3,"restSec":90},{"id":15,"exercise":"Cable Triceps Pushdown","gymVariant":"","homeVariant":"","variants":"Rope attachment (allows wrist rotation, easier on elbows); reverse-grip pushdown for variety","setsReps":"3 x 10-15","rest":"60 sec","execution":"Setup: Grip the attachment with elbows pinned to your sides, slight forward lean.\nPress down: Extend the forearms down and, with a rope, slightly out at the bottom, squeeze the triceps.\nReturn: Control the return to roughly 90 degrees at the elbow, don't let the weight stack slam.","watchouts":"Don't let elbows drift forward/away from the body - this turns it into a shoulder/chest movement and reduces triceps isolation.","dailyOrder":null,"noEquipment":false,"contexts":[{"sectionGroup":"Workout Days","section":"Day 2 (Bench Focus)","category":"Isolation"},{"sectionGroup":"Muscle Library","section":"Triceps","category":"Elbow extension"}],"crossRef":null,"muscleGroup":"Triceps","dayTags":["Day 2 (Bench Focus)"],"sets":3,"restSec":60},{"id":16,"exercise":"Machine Leg Extension","gymVariant":"","homeVariant":"","variants":"N/A - if unavailable, substitute with an extra set of Romanian Deadlift or goblet squat","setsReps":"3 x 10-15","rest":"60 sec","execution":"Setup: Align the machine's pivot point with your knee joint, pad on the lower shin.\nExtend: Straighten the legs under control, pause and squeeze at the top.\nLower: Control the descent back to start.","watchouts":"Avoid slamming into full lockout with momentum, which loads the knee joint and patellar tendon unnecessarily.","dailyOrder":null,"noEquipment":false,"contexts":[{"sectionGroup":"Workout Days","section":"Day 2 (Bench Focus)","category":"Isolation"},{"sectionGroup":"Muscle Library","section":"Quads","category":"Knee isolation"}],"crossRef":null,"muscleGroup":"Quads","dayTags":["Day 2 (Bench Focus)"],"sets":3,"restSec":60},{"id":17,"exercise":"Cable Pallof Press","gymVariant":"","homeVariant":"","variants":"Band Pallof press if cable rack is occupied; half-kneeling version for an added stability challenge","setsReps":"3 x 10-12/side","rest":"45 sec","execution":"Setup: Stand side-on to the cable at chest height, handle held with both hands at your chest.\nPress: Press straight out in front of your chest, hold 1-2 sec resisting the cable's pull to rotate you.\nReturn: Pull back to your chest under control, keep hips and shoulders square throughout.","watchouts":"Any torso rotation toward the machine means the load is too heavy - lighten it and rebuild control first.","dailyOrder":null,"noEquipment":false,"contexts":[{"sectionGroup":"Workout Days","section":"Day 2 (Bench Focus)","category":"Core"},{"sectionGroup":"Muscle Library","section":"Core","category":"Anti-rotation"}],"crossRef":null,"muscleGroup":"Core","dayTags":["Day 2 (Bench Focus)"],"sets":3,"restSec":45},{"id":18,"exercise":"Russian Twist","gymVariant":"","homeVariant":"","variants":"Light plate or dumbbell at the gym; bodyweight, a book, or a light household object at home","setsReps":"3 x 12-16/side","rest":"45 sec","execution":"Setup: Sit with knees bent, lean back to roughly 45 degrees, feet lifted or grounded (grounded is fine while rebuilding).\nTwist: Rotate the torso side to side under control, tapping the weight near the floor each side.","watchouts":"Keep weight light and speed controlled - this is a rotational spinal-loading movement; fast, heavy twisting is a common way people tweak the lower back.","dailyOrder":null,"noEquipment":true,"contexts":[{"sectionGroup":"Workout Days","section":"Day 2 (Bench Focus)","category":"Core"},{"sectionGroup":"Muscle Library","section":"Core","category":"Rotation"}],"crossRef":null,"muscleGroup":"Core","dayTags":["Day 2 (Bench Focus)"],"sets":3,"restSec":45},{"id":19,"exercise":"Conventional Deadlift","gymVariant":"","homeVariant":"","variants":"Trap-Bar Deadlift (more upright torso, more beginner/comeback-friendly); Sumo Deadlift (more hip/less lower-back, if hip mobility allows)","setsReps":"4 x 4-6","rest":"3 min","execution":"Setup: Bar over mid-foot, shins close to touching it. Hinge down and grip the bar just outside your shins, flat back, chest up, shoulders slightly ahead of the bar, hips higher than knees but lower than shoulders.\nTake the slack: Pull the slack out of the bar until you hear/feel it click tight before you pull - this protects against a jerky start.\nPull: Push the floor away through your legs, keep the bar dragging up your shins/thighs, chest and hips rise at the same rate until the bar clears your knees, then drive the hips forward to lock out standing tall. Don't lean back past vertical.\nLower: Reverse the path under control, push the hips back first, then bend the knees once the bar passes them, don't just drop it.","watchouts":"Lower-back rounding under load is the main injury risk - if you can't keep a flat back in the setup with a given weight, the weight is too heavy or your setup needs work. Don't jerk the bar off the floor. Keep the bar close to your body throughout.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Workout Days","section":"Day 3 (Deadlift Focus)","category":"Primary"}],"muscleGroup":"Back","dayTags":["Day 3 (Deadlift Focus)"],"sets":4,"restSec":180},{"id":21,"exercise":"Pull-Up / Assisted Pull-Up or Lat Pulldown","gymVariant":"","homeVariant":"","variants":"Assisted pull-up machine if bodyweight reps aren't yet available; weighted pull-up once 3x10+ bodyweight is easy","setsReps":"3 x 8-12","rest":"90 sec","execution":"Setup: Grip the bar just outside shoulder width, dead hang to start.\nPull: Pull your chin over the bar by driving elbows down toward your hips, chest toward the bar.\nLower: Control the descent back to a full dead hang.","watchouts":"Avoid excessive kipping/swinging on every rep - occasional momentum on the last rep or two of a hard set is fine, but shouldn't be the default while rebuilding strength.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Workout Days","section":"Day 3 (Deadlift Focus)","category":"Isolation"}],"muscleGroup":"Back","dayTags":["Day 3 (Deadlift Focus)"],"sets":3,"restSec":90},{"id":22,"exercise":"Dumbbell Bicep Curl","gymVariant":"","homeVariant":"","variants":"Cable curl (constant tension throughout the range); hammer curl (more forearm/brachialis)","setsReps":"3 x 10-15","rest":"60 sec","execution":"Setup: Stand tall, dumbbells at your sides, elbows pinned to your ribs.\nCurl: Curl the weight up by flexing at the elbow only, squeeze at the top.\nLower: Extend fully under control without swinging the torso.","watchouts":"Don't use body English (leaning back, hip swing) to move the weight - if you need to swing, the weight is too heavy.","dailyOrder":null,"noEquipment":false,"contexts":[{"sectionGroup":"Workout Days","section":"Day 3 (Deadlift Focus)","category":"Isolation"},{"sectionGroup":"Muscle Library","section":"Biceps","category":"Elbow flexion"}],"crossRef":null,"muscleGroup":"Biceps","dayTags":["Day 3 (Deadlift Focus)"],"sets":3,"restSec":60},{"id":23,"exercise":"Standing or Seated Calf Raise","gymVariant":"","homeVariant":"","variants":"Seated calf raise machine (targets soleus more); leg-press calf raise if no dedicated machine","setsReps":"3 x 12-20","rest":"60 sec","execution":"Setup: Balls of feet on the platform edge, heels hanging off.\nRaise: Rise onto the toes as high as possible, pause briefly at the top.\nLower: Lower under control into a full stretch at the bottom before the next rep.","watchouts":"Don't bounce out of the bottom stretch position - control the tempo to keep tension on the calf rather than the tendon.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Workout Days","section":"Day 3 (Deadlift Focus)","category":"Isolation"}],"muscleGroup":"Calves","dayTags":["Day 3 (Deadlift Focus)"],"sets":3,"restSec":60},{"id":24,"exercise":"Hanging Knee/Leg Raise","gymVariant":"","homeVariant":"","variants":"Captain's chair (back-supported) if grip/hang is the limiter, not the abs; straight-leg raise for more difficulty once knee raises are easy","setsReps":"3 x 10-15","rest":"60 sec","execution":"Setup: Hang from the bar with a slight posterior pelvic tilt to start (don't hang in a full arch).\nRaise: Curl the pelvis and lift knees toward chest using your abs, not by swinging.\nLower: Lower under control back to the start position.","watchouts":"Don't use momentum/swinging to throw the legs up. If grip fails before your abs do, use wrist straps rather than sacrificing form.","dailyOrder":null,"noEquipment":false,"contexts":[{"sectionGroup":"Workout Days","section":"Day 3 (Deadlift Focus)","category":"Core"},{"sectionGroup":"Muscle Library","section":"Core","category":"Flexion (lower abs)"}],"crossRef":null,"muscleGroup":"Core","dayTags":["Day 3 (Deadlift Focus)"],"sets":3,"restSec":60},{"id":25,"exercise":"Kettlebell Around-the-Head Pass","gymVariant":"","homeVariant":"","variants":"Light-moderate kettlebell at the gym; light dumbbell or filled water bottle at home","setsReps":"3 x 8-10/direction","rest":"45 sec","execution":"Setup: Stand tall, core braced, hold the weight in one hand at head height.\nPass: Pass the weight around your head at roughly ear height, hand to hand, keeping the torso upright and still.","watchouts":"Use a light weight and controlled pace. If your torso starts twisting or leaning to keep the bell moving, the weight is too heavy. Skip this on a day your shoulders already feel beat up from pressing.","dailyOrder":null,"noEquipment":false,"contexts":[{"sectionGroup":"Workout Days","section":"Day 3 (Deadlift Focus)","category":"Core"},{"sectionGroup":"Muscle Library","section":"Core","category":"Rotation / anti-rotation"}],"crossRef":null,"muscleGroup":"Core","dayTags":["Day 3 (Deadlift Focus)"],"sets":3,"restSec":45},{"id":26,"exercise":"Side Plank","gymVariant":"Bodyweight, add a light dumbbell on the hip for load","homeVariant":"Bodyweight on the floor, same as gym","variants":"","setsReps":"3 x 20-30 sec/side","rest":"","execution":"Setup: Elbow under shoulder, stack feet or stagger them for balance.\nHold: Lift hips until shoulders, hips, and ankles form one straight line, top hand on hip or reaching to ceiling.","watchouts":"Don't let hips drop toward the floor mid-set - that's the failure point, stop the set there rather than pushing through.","dailyOrder":null,"noEquipment":true,"crossRef":["Mobility & Recovery \u2192 Lower Back Recovery (2-3 x 15-20 sec/side to start)"],"contexts":[{"sectionGroup":"Muscle Library","section":"Core","category":"Anti-lateral flexion"}],"muscleGroup":"Core","dayTags":[],"sets":3,"restSec":60},{"id":27,"exercise":"Side Plank","gymVariant":"Bodyweight, add a light dumbbell on the hip once easy","homeVariant":"Bodyweight on the floor","variants":"","setsReps":"2-3 x 15-20 sec/side to start","rest":"","execution":"Setup: Elbow under shoulder, stack or stagger the feet for balance.\nHold: Lift hips until shoulders, hips, and ankles form one straight line.","watchouts":"Same principle as plank - short, pain-free holds first, build duration gradually rather than jumping back to your old numbers.","dailyOrder":null,"noEquipment":true,"crossRef":["Muscle Library \u2192 Core (3 x 20-30 sec/side)"],"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Phase 1 - Foundational stability"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":28,"exercise":"Dead Bug","gymVariant":"Bodyweight, or hold a light plate overhead for extra challenge","homeVariant":"Bodyweight on the floor, no equipment","variants":"","setsReps":"3 x 8-10/side","rest":"","execution":"Setup: Lie on your back, arms reaching to the ceiling, knees bent 90 degrees over hips.\nMove: Lower back pressed flat into the floor throughout, extend opposite arm and leg toward the floor slowly, return, switch sides.","watchouts":"The moment your lower back arches off the floor, the range was too big - shrink it. Move slowly, this is a control drill.","dailyOrder":null,"noEquipment":true,"crossRef":["Mobility & Recovery \u2192 Lower Back Recovery (2-3 x 8-10/side)"],"contexts":[{"sectionGroup":"Muscle Library","section":"Core","category":"Anti-extension / coordination"}],"muscleGroup":"Core","dayTags":[],"sets":3,"restSec":60},{"id":29,"exercise":"Dead Bug","gymVariant":"Bodyweight, or hold a light plate overhead once pain-free","homeVariant":"Bodyweight on the floor, no equipment","variants":"","setsReps":"2-3 x 8-10/side","rest":"","execution":"Setup: Lie on your back, arms reaching to the ceiling, knees bent 90 degrees over hips.\nMove: Lower back pressed flat into the floor throughout, extend opposite arm and leg toward the floor slowly, return, switch sides.","watchouts":"This trains core stability with zero spinal loading - keep the range small enough that the lower back never arches off the floor. Stop for the day if it provokes pain, not just fatigue.","dailyOrder":null,"noEquipment":true,"crossRef":["Muscle Library \u2192 Core (3 x 8-10/side)"],"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Phase 1 - Foundational stability"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":30,"exercise":"Bird Dog","gymVariant":"Bodyweight on a mat","homeVariant":"Bodyweight on a mat, identical to gym","variants":"","setsReps":"3 x 8-10/side","rest":"","execution":"Setup: Hands under shoulders, knees under hips.\nMove: Extend opposite arm and leg until in line with your torso, hold briefly, keep hips and shoulders square to the floor throughout.","watchouts":"Don't let the hips rotate open as the leg extends - imagine balancing a glass of water on your lower back.","dailyOrder":null,"noEquipment":true,"crossRef":["Mobility & Recovery \u2192 Lower Back Recovery (2-3 x 8-10/side)"],"contexts":[{"sectionGroup":"Muscle Library","section":"Core","category":"Anti-rotation / coordination"}],"muscleGroup":"Core","dayTags":[],"sets":3,"restSec":60},{"id":31,"exercise":"Bird Dog","gymVariant":"Bodyweight on a mat","homeVariant":"Bodyweight on a mat, identical to gym","variants":"","setsReps":"2-3 x 8-10/side","rest":"","execution":"Setup: Hands under shoulders, knees under hips.\nMove: Extend opposite arm and leg until in line with your torso, hold briefly, keep hips and shoulders square to the floor throughout.","watchouts":"Keep it slow and controlled - this is about learning to brace the spine while the limbs move, which is exactly what broke down on the squat rep that caused the injury.","dailyOrder":null,"noEquipment":true,"crossRef":["Muscle Library \u2192 Core (3 x 8-10/side)"],"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Phase 1 - Foundational stability"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":32,"exercise":"Ab Wheel Rollout","gymVariant":"Ab wheel","homeVariant":"Ab wheel if owned, otherwise a barbell with small plates, or substitute Plank progressions","variants":"","setsReps":"3 x 6-10","rest":"","execution":"Setup: Kneel, hold the wheel under your shoulders, brace hard.\nMove: Roll out only as far as you can maintain a flat lower back, pull back using the abs, not the hip flexors.","watchouts":"Do not add this until Plank and Dead Bug feel easy - a lower back that rounds or sags is the most common way this one causes injury. Stop the rollout well short of full extension until you've built up to it.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Core","category":"Anti-extension (advanced)"}],"muscleGroup":"Core","dayTags":[],"sets":3,"restSec":60},{"id":33,"exercise":"Cable Woodchop","gymVariant":"High or low cable pulley","homeVariant":"Resistance band anchored high or low","variants":"","setsReps":"3 x 10-12/side","rest":"","execution":"Setup: Stand side-on to the pulley, grip the handle with both hands.\nMove: Pull the handle diagonally across your body, rotating through the torso and hips together, control the return.","watchouts":"Rotate through the whole body, not just the arms - isolating the arms takes the work off the core and can strain the shoulders.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Core","category":"Rotation (diagonal)"}],"muscleGroup":"Core","dayTags":[],"sets":3,"restSec":60},{"id":34,"exercise":"Weighted Sit-Up","gymVariant":"Light plate held at chest, feet anchored","homeVariant":"Bodyweight, or a light household object at chest","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Lie on your back, knees bent, feet flat.\nMove: Curl up through the spine one segment at a time to sitting, control the descent back down.","watchouts":"Skip if you have any existing lower-back irritation from the day's lifting - substitute Dead Bug or Plank instead, since sit-ups combine spinal flexion with hip flexor load.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Core","category":"Flexion (upper + lower abs)"}],"muscleGroup":"Core","dayTags":[],"sets":3,"restSec":60},{"id":35,"exercise":"Barbell Bench Press","gymVariant":"Barbell + bench (your Day 1/2 primary/secondary lift)","homeVariant":"Push-up (feet on floor)","variants":"","setsReps":"See Day sheets / 3 x 8-12","rest":"","execution":"Setup: Shoulder blades retracted and pinned, feet driving into the floor.\nDescent: Lower the bar to your lower chest, elbows ~45-75 degrees from torso.\nPress: Drive back up in a slight arc, full lockout without shrugging forward.","watchouts":"Don't let shoulders roll forward off the bench or let elbows flare to 90 degrees.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Chest","category":"Horizontal push"}],"muscleGroup":"Chest","dayTags":[],"sets":3,"restSec":60},{"id":36,"exercise":"Incline Dumbbell Press","gymVariant":"Incline bench + dumbbells","homeVariant":"Feet-elevated push-up (mimics incline angle)","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Bench at 30-45 degrees, dumbbells at shoulder height.\nPress: Press dumbbells up and slightly in, without locking elbows out hard at the top.\nLower: Control the descent to a stretch across the chest.","watchouts":"Too steep an incline (60+) turns this into a shoulder press and takes it off the chest - keep it moderate.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Chest","category":"Horizontal/upper push"}],"muscleGroup":"Chest","dayTags":[],"sets":3,"restSec":60},{"id":37,"exercise":"Cable or Dumbbell Fly","gymVariant":"Cable crossover, standing, mid-height pulleys","homeVariant":"Resistance band anchored behind you, or towel-assisted floor fly","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Slight bend in elbows held constant throughout.\nMove: Arc the hands together in front of the chest, squeeze at the point of contraction, control the return to a stretch.","watchouts":"Don't let the elbows straighten and turn it into a press. Don't go so heavy that the shoulder is pulled into an overstretched position at the back of the movement.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Chest","category":"Horizontal push (isolation)"}],"muscleGroup":"Chest","dayTags":[],"sets":3,"restSec":60},{"id":38,"exercise":"Push-Up","gymVariant":"Optional: weighted vest or plate on back once easy","homeVariant":"Standard, no equipment - elevate feet for more difficulty, elevate hands for less","variants":"","setsReps":"3 x max quality reps (aim 10-20)","rest":"","execution":"Setup: Hands roughly under shoulders, straight line head to heels.\nLower: Lower chest to just above the floor, elbows tracking back at ~45 degrees.\nPress: Push back to full lockout.","watchouts":"Don't let hips sag or pike - keep the same bracing you use in a plank.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Chest","category":"Horizontal push (bodyweight)"}],"muscleGroup":"Chest","dayTags":[],"sets":3,"restSec":60},{"id":39,"exercise":"Dip (chest-leaning variant)","gymVariant":"Dip station, lean torso forward","homeVariant":"Between two sturdy chairs, or skip and add extra push-up volume","variants":"","setsReps":"3 x 6-12","rest":"","execution":"Setup: Grip the bars, lean the torso forward.\nLower: Lower until shoulders are roughly level with elbows.\nPress: Press back up to lockout without shrugging.","watchouts":"Don't drop below the point where you feel a shoulder-front stretch or pinch - excessive depth is a common cause of shoulder strain, especially early in a comeback.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Chest","category":"Horizontal/lower push"}],"muscleGroup":"Chest","dayTags":[],"sets":3,"restSec":60},{"id":40,"exercise":"Decline Bench Press","gymVariant":"Decline bench + barbell or dumbbells","homeVariant":"Push-up with feet elevated behind you (mimics decline angle)","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Secure feet under the pads, same shoulder-blade retraction as flat bench.\nDescent: Lower to the lower chest.\nPress: Press up and slightly back toward your face.","watchouts":"Keep the range controlled - the decline angle can tempt a shorter, bouncier rep; slow it down.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Chest","category":"Horizontal/lower push"}],"muscleGroup":"Chest","dayTags":[],"sets":3,"restSec":60},{"id":41,"exercise":"Landmine Press","gymVariant":"Barbell in a landmine attachment or wedged in a corner","homeVariant":"Loaded backpack pressed overhead at an angle, or resistance band anchored low","variants":"","setsReps":"3 x 8-12/side","rest":"","execution":"Setup: Hold the end of the bar at shoulder height with one or both hands, staggered stance.\nPress: Press up and away along the bar's natural arc, control the return.","watchouts":"A shoulder-friendly option if flat bench irritates the joint - keep the movement smooth, not jerky.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Chest","category":"Angled push"}],"muscleGroup":"Chest","dayTags":[],"sets":3,"restSec":60},{"id":42,"exercise":"Cable Crossover (Low-to-High)","gymVariant":"Cable stack, pulleys set low","homeVariant":"Resistance band anchored low, pulled up and across","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Grip low pulleys, slight forward lean, arms starting below hip height.\nMove: Sweep hands up and together toward eye level, squeeze the upper chest, control the return.","watchouts":"Don't use the shoulders to muscle the weight up - keep the motion an arc driven by the chest, not a straight-arm shrug.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Chest","category":"Upper chest isolation"}],"muscleGroup":"Chest","dayTags":[],"sets":3,"restSec":60},{"id":43,"exercise":"Barbell or Trap-Bar Deadlift","gymVariant":"Barbell/trap bar (your Day 3 primary lift)","homeVariant":"Suitcase deadlift with heavy bags/backpacks as a light substitute only","variants":"","setsReps":"See Day sheets / 3 x 4-8","rest":"","execution":"Setup: Flat back, bar over mid-foot.\nPull: Push the floor away, bar stays close to the shins/thighs throughout, lock out by driving hips forward.\nLower: Push hips back first, then bend the knees.","watchouts":"The core deadlift risk is lower-back rounding - if you can't keep a flat back in the setup, the load is too heavy.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Back","category":"Hip hinge / pull"}],"muscleGroup":"Back","dayTags":[],"sets":3,"restSec":60},{"id":44,"exercise":"Barbell or Dumbbell Row","gymVariant":"Barbell row or single-arm dumbbell row","homeVariant":"Single-arm row using a heavy backpack or filled bag, bench = sturdy chair/bed edge","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Hinge to roughly 45 degrees (or brace on a bench for single-arm).\nPull: Pull elbow back past the torso, squeeze the shoulder blade at the top.\nLower: Extend fully under control.","watchouts":"Don't round the lower back to add momentum - if form breaks, drop the weight rather than yanking it up.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Back","category":"Horizontal pull"}],"muscleGroup":"Back","dayTags":[],"sets":3,"restSec":60},{"id":45,"exercise":"Lat Pulldown or Pull-Up","gymVariant":"Lat pulldown machine, or pull-up bar","homeVariant":"Pull-up bar if available; otherwise resistance band anchored high on a door","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Grip slightly wider than shoulders.\nPull: Slight lean back, pull to upper chest/chin over bar by driving elbows down and back, full stretch at the top.","watchouts":"Don't turn it into a rowing motion by leaning back too far. Control the return rather than letting the weight/your body drop.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Back","category":"Vertical pull"}],"muscleGroup":"Back","dayTags":[],"sets":3,"restSec":60},{"id":46,"exercise":"Single-Arm Dumbbell Row","gymVariant":"Dumbbell + flat bench for support","homeVariant":"Heavy backpack/bag, support hand on a chair or bed","variants":"","setsReps":"3 x 10-12/side","rest":"","execution":"Setup: Flat back, brace on the support arm and knee.\nPull: Pull elbow straight back past your ribs, avoid rotating the torso to help.\nLower: Extend fully under control.","watchouts":"Keep the torso still - rotating to swing the weight up is the most common cheat and takes tension off the back.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Back","category":"Horizontal pull (unilateral)"}],"muscleGroup":"Back","dayTags":[],"sets":3,"restSec":60},{"id":47,"exercise":"Face Pull","gymVariant":"Cable + rope attachment, set at face height","homeVariant":"Resistance band anchored at chest/face height","variants":"","setsReps":"3 x 12-15","rest":"","execution":"Setup: Grip the rope with both hands, arms extended toward the anchor.\nPull: Pull toward your face, elbows high and out to the sides, squeeze shoulder blades together and slightly rotate hands back.","watchouts":"Don't use heavy weight and momentum - this is a postural/shoulder-health movement, control matters far more than load.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Back","category":"Horizontal pull / rear delt"}],"muscleGroup":"Back","dayTags":[],"sets":3,"restSec":60},{"id":48,"exercise":"Seated Cable Row","gymVariant":"Cable row machine with V-bar or wide handle","homeVariant":"Resistance band anchored at a low point, seated on the floor","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Sit tall, knees slightly bent, grip the handle with arms extended.\nPull: Drive elbows back, keep the torso upright (a small hinge back at the top is fine, don't lean far).\nReturn: Extend arms fully, feel a stretch through the upper back.","watchouts":"Don't lean back excessively and use body swing to move the weight - this is a common cheat once the set gets hard.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Back","category":"Horizontal pull"}],"muscleGroup":"Back","dayTags":[],"sets":3,"restSec":60},{"id":49,"exercise":"Straight-Arm Pulldown","gymVariant":"Cable stack, high pulley with straight or rope bar","homeVariant":"Resistance band anchored high","variants":"","setsReps":"3 x 12-15","rest":"","execution":"Setup: Stand facing the anchor, arms extended overhead, slight forward hinge.\nMove: Keeping arms straight, pull the bar down to your thighs by driving through the lats, control the return.","watchouts":"Keep elbows nearly straight throughout (a very slight bend is fine) - bending them turns it into a pulldown and takes tension off the lats.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Back","category":"Lat isolation"}],"muscleGroup":"Back","dayTags":[],"sets":3,"restSec":60},{"id":50,"exercise":"Shrug","gymVariant":"Barbell or dumbbells","homeVariant":"Loaded backpack or heavy bags held at your sides","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Stand tall, weight in hand at your sides.\nMove: Elevate the shoulders straight up toward your ears, squeeze at the top, lower under control.","watchouts":"Don't roll the shoulders in a circular motion - straight up and down is safer for the shoulder joint and just as effective.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Back","category":"Trap isolation"}],"muscleGroup":"Back","dayTags":[],"sets":3,"restSec":60},{"id":52,"exercise":"Lateral Raise","gymVariant":"Cable or dumbbell lateral raise","homeVariant":"Dumbbells, or water bottles/light household items","variants":"","setsReps":"3 x 12-15","rest":"","execution":"Setup: Slight bend in elbow, weight at your side.\nRaise: Lead with the elbow, raise to roughly shoulder height, pause briefly.\nLower: Control the descent.","watchouts":"Don't swing from the hips for momentum, and don't raise above shoulder height - both increase impingement risk.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Shoulders","category":"Shoulder isolation (side delt)"}],"muscleGroup":"Shoulders","dayTags":[],"sets":3,"restSec":60},{"id":53,"exercise":"Rear Delt Fly","gymVariant":"Dumbbell or machine rear delt fly, bent over or chest-supported","homeVariant":"Dumbbells or light household items, bent over","variants":"","setsReps":"3 x 12-15","rest":"","execution":"Setup: Hinge forward, slight bend in elbows, weights hanging below shoulders.\nRaise: Raise arms out to the sides squeezing shoulder blades together, not just lifting the arms.\nLower: Control the descent.","watchouts":"Don't use momentum by rocking the torso - this is a small-muscle, light-weight movement.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Shoulders","category":"Shoulder isolation (rear delt)"}],"muscleGroup":"Shoulders","dayTags":[],"sets":3,"restSec":60},{"id":54,"exercise":"Pike Push-Up","gymVariant":"Optional at gym on an elevated surface for more overload","homeVariant":"Standard, hips high, hands and feet on the floor","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Hips high, forming an inverted V, hands under shoulders.\nLower: Lower the head toward the floor between your hands.\nPress: Press back up to the start.","watchouts":"Don't let the lower back sag - keep the hips lifted throughout so the shoulders take the load.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Shoulders","category":"Vertical push (bodyweight)"}],"muscleGroup":"Shoulders","dayTags":[],"sets":3,"restSec":60},{"id":55,"exercise":"Arnold Press","gymVariant":"Dumbbells","homeVariant":"Dumbbells, or a loaded backpack held with both hands","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Start with dumbbells at shoulder height, palms facing you.\nPress: Press up while rotating the palms to face forward, finishing overhead.\nLower: Reverse the rotation on the way down.","watchouts":"Keep the rotation smooth and controlled - jerking through the turn can irritate the shoulder joint, especially with heavier loads.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Shoulders","category":"Vertical push + rotation"}],"muscleGroup":"Shoulders","dayTags":[],"sets":3,"restSec":60},{"id":56,"exercise":"Front Raise","gymVariant":"Dumbbell or cable, low pulley","homeVariant":"Dumbbells or a light household item","variants":"","setsReps":"3 x 12-15","rest":"","execution":"Setup: Weight in front of your thighs, slight bend in elbows.\nRaise: Raise straight out in front to roughly shoulder height, pause briefly.\nLower: Control the descent.","watchouts":"Don't swing the torso to generate momentum, and don't raise past shoulder height.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Shoulders","category":"Shoulder isolation (front delt)"}],"muscleGroup":"Shoulders","dayTags":[],"sets":3,"restSec":60},{"id":57,"exercise":"Upright Row","gymVariant":"Barbell, dumbbells, or cable","homeVariant":"Loaded backpack or heavy bags","variants":"","setsReps":"3 x 10-12","rest":"","execution":"Setup: Grip just inside shoulder width, weight in front of your thighs.\nPull: Pull straight up along the body, leading with the elbows, to roughly chest height.\nLower: Control the descent.","watchouts":"Stop the pull at or below shoulder height, and if you feel any shoulder pinching, switch to a wider grip or drop this exercise for Lateral Raise instead.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Shoulders","category":"Vertical pull (traps/side delt)"}],"muscleGroup":"Shoulders","dayTags":[],"sets":3,"restSec":60},{"id":58,"exercise":"Cable Y-Raise","gymVariant":"Cable stack, low pulleys crossed","homeVariant":"Light resistance band anchored low, crossed to opposite hands","variants":"","setsReps":"3 x 12-15","rest":"","execution":"Setup: Grip crossed low pulleys, arms extended down and across the body.\nRaise: Raise both arms simultaneously out and up into a Y shape, thumbs leading.\nLower: Control the descent.","watchouts":"Use light weight - this targets the smaller stabilizing muscles around the shoulder blade, not a movement to load heavily.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Shoulders","category":"Shoulder isolation (lower traps/delts)"}],"muscleGroup":"Shoulders","dayTags":[],"sets":3,"restSec":60},{"id":59,"exercise":"Front or Goblet Squat","gymVariant":"Barbell front squat, or dumbbell/kettlebell goblet squat","homeVariant":"Goblet squat holding a heavy backpack, bag of books, or any weighted household item","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Hold the weight at chest height (goblet) or across the front of the shoulders (front squat), elbows up.\nDescent: More upright torso than a back squat, descend under control keeping elbows high.\nAscent: Drive up through the whole foot.","watchouts":"If the torso collapses forward or the weight pulls you off balance, it's too heavy - this variant should feel controlled, not grinding.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Quads","category":"Knee-dominant compound"}],"muscleGroup":"Quads","dayTags":[],"sets":3,"restSec":60},{"id":60,"exercise":"Leg Press","gymVariant":"Leg press machine","homeVariant":"Bulgarian split squat as the closest substitute (see Hamstrings & Glutes tab)","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Feet shoulder-width on the platform, back flat against the pad.\nLower: Lower until knees reach roughly 90 degrees.\nPress: Push through the whole foot back to a slight bend at the top.","watchouts":"Don't let your lower back round off the pad at the bottom, and don't lock knees out hard at the top - keep a slight bend.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Quads","category":"Knee-dominant compound (machine)"}],"muscleGroup":"Quads","dayTags":[],"sets":3,"restSec":60},{"id":61,"exercise":"Walking Lunge","gymVariant":"Dumbbells in each hand, or bodyweight","homeVariant":"Bodyweight, or holding a backpack/bags for added load","variants":"","setsReps":"3 x 10-12/leg","rest":"","execution":"Setup: Stand tall, weight in hand or at sides.\nStep: Step forward, lower until both knees are near 90 degrees, front knee tracks over the foot.\nDrive: Push back to standing through the front heel and step into the next rep.","watchouts":"Don't let the front knee cave inward or shoot far past the toes with the torso collapsing forward - keep the torso tall.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Quads","category":"Knee-dominant (unilateral)"}],"muscleGroup":"Quads","dayTags":[],"sets":3,"restSec":60},{"id":62,"exercise":"Step-Up","gymVariant":"Box or bench + dumbbells","homeVariant":"Sturdy stair step or chair, bodyweight or holding a bag","variants":"","setsReps":"3 x 8-12/leg","rest":"","execution":"Setup: Stand facing a box roughly knee height, one foot planted on top.\nStep: Drive through the top foot to stand fully on the box, control the step back down.","watchouts":"Avoid pushing off the bottom foot to help - the top leg should do the work. If you need to push off, lower the box height.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Quads","category":"Knee-dominant (unilateral)"}],"muscleGroup":"Quads","dayTags":[],"sets":3,"restSec":60},{"id":63,"exercise":"Hack Squat","gymVariant":"Hack squat machine","homeVariant":"Wall sit or goblet squat as substitute","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Shoulders and back against the pads, feet shoulder-width on the platform.\nDescend: Lower under control to roughly 90 degrees at the knee.\nPress: Push through the whole foot back to the top.","watchouts":"Don't let the knees cave inward, and keep a slight bend at the top rather than locking out hard.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Quads","category":"Knee-dominant compound (machine)"}],"muscleGroup":"Quads","dayTags":[],"sets":3,"restSec":60},{"id":64,"exercise":"Wall Sit","gymVariant":"Optional: hold a dumbbell across the lap for load","homeVariant":"Against any wall, bodyweight","variants":"","setsReps":"3 x 30-45 sec","rest":"","execution":"Setup: Back flat against a wall, slide down until thighs are roughly parallel to the floor.\nHold: Hold the position, weight through the heels, knees tracking over the feet.","watchouts":"Don't let the knees drift past the toes or cave inward - a useful finisher, but not a substitute for loaded squatting long-term.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Quads","category":"Knee-dominant isometric"}],"muscleGroup":"Quads","dayTags":[],"sets":3,"restSec":60},{"id":65,"exercise":"Hip Thrust / Glute Bridge","gymVariant":"Barbell hip thrust, shoulders on a bench","homeVariant":"Bodyweight glute bridge on the floor, or a backpack across the hips for load","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Upper back on a bench, feet flat, bar/weight across the hips.\nDrive: Drive through the heels, extend the hips fully, squeeze glutes hard at the top without over-arching the lower back.\nLower: Control the descent.","watchouts":"Don't hyperextend the lower back at the top to get 'higher' - the movement should stop at full hip extension, not spinal extension.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Hamstrings & Glutes","category":"Hip-dominant (glute-focused)"}],"muscleGroup":"Hamstrings & Glutes","dayTags":[],"sets":3,"restSec":60},{"id":66,"exercise":"Bulgarian Split Squat","gymVariant":"Rear foot elevated on a bench, dumbbells in hand","homeVariant":"Rear foot elevated on a chair or couch, bodyweight or holding a bag","variants":"","setsReps":"3 x 8-12/leg","rest":"","execution":"Setup: Rear foot elevated behind you, front foot far enough forward that the shin stays roughly vertical.\nDescend: Lower under control, torso upright.\nDrive: Push through the front heel back to standing.","watchouts":"Balance issues here usually mean the front foot is positioned too close - move it further forward rather than fighting for balance.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Hamstrings & Glutes","category":"Hip and knee-dominant (unilateral)"}],"muscleGroup":"Hamstrings & Glutes","dayTags":[],"sets":3,"restSec":60},{"id":67,"exercise":"Single-Leg Romanian Deadlift","gymVariant":"Single dumbbell or kettlebell","homeVariant":"Bodyweight, or a light household object for added challenge","variants":"","setsReps":"3 x 8-10/leg","rest":"","execution":"Setup: Stand on one leg, slight bend in the standing knee.\nHinge: Hinge at the hips while the free leg extends back for counterbalance, keep hips square to the floor.\nReturn: Drive back to standing, light touch-down of the weight for control.","watchouts":"Don't let the hips rotate open as you hinge - imagine your hip bones are two headlights that must keep pointing at the floor.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Hamstrings & Glutes","category":"Hip-dominant (unilateral/balance)"}],"muscleGroup":"Hamstrings & Glutes","dayTags":[],"sets":3,"restSec":60},{"id":68,"exercise":"Good Morning","gymVariant":"Barbell across the upper back, light-moderate load","homeVariant":"Bodyweight hip hinge, or a loaded backpack across the shoulders","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Setup: Bar across the upper back (as in a squat), soft bend in the knees, feet hip-width.\nHinge: Push hips back, hinge the torso forward keeping a flat back, until you feel a hamstring stretch.\nReturn: Drive hips forward to return to standing.","watchouts":"Use light weight until this pattern feels solid - it loads the lower back in a hinge position, similar risk profile to the RDL if the back rounds.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Hamstrings & Glutes","category":"Hip-dominant compound"}],"muscleGroup":"Hamstrings & Glutes","dayTags":[],"sets":3,"restSec":60},{"id":69,"exercise":"Cable Pull-Through","gymVariant":"Cable stack, low pulley, rope attachment between the legs","homeVariant":"Resistance band anchored low behind you, between the legs","variants":"","setsReps":"3 x 12-15","rest":"","execution":"Setup: Face away from the low pulley, rope between your legs, feet shoulder-width.\nHinge: Hinge forward at the hips, reaching the rope back through your legs.\nDrive: Drive hips forward to standing, squeeze glutes at the top.","watchouts":"Keep the knees soft and let the hips do the work - don't turn it into a squat by bending the knees heavily.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Hamstrings & Glutes","category":"Hip-dominant (glute/hamstring)"}],"muscleGroup":"Hamstrings & Glutes","dayTags":[],"sets":3,"restSec":60},{"id":70,"exercise":"Reverse Lunge","gymVariant":"Dumbbells in each hand, or bodyweight","homeVariant":"Bodyweight, or holding a backpack/bags for added load","variants":"","setsReps":"3 x 10-12/leg","rest":"","execution":"Setup: Stand tall.\nStep: Step backward, lower until both knees are near 90 degrees, front knee stays over the foot.\nDrive: Push through the front heel back to standing.","watchouts":"Easier on the knees than a walking lunge for a comeback phase, since there's less forward knee travel - a good starting point if walking lunges feel rough on the knees.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Hamstrings & Glutes","category":"Hip and knee-dominant (unilateral)"}],"muscleGroup":"Hamstrings & Glutes","dayTags":[],"sets":3,"restSec":60},{"id":71,"exercise":"Standing Calf Raise","gymVariant":"Standing calf raise machine, or barbell on a step","homeVariant":"Bodyweight on a stair/curb edge, holding a rail for balance, add a backpack for load","variants":"","setsReps":"3 x 12-20","rest":"","execution":"Setup: Balls of feet on the platform/step edge, heels hanging off.\nRaise: Rise onto the toes as high as possible, pause briefly.\nLower: Lower into a full stretch at the bottom before the next rep.","watchouts":"Don't bounce out of the bottom stretch - control the tempo to keep tension on the muscle rather than the tendon.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Calves","category":"Calf (gastrocnemius-dominant)"}],"muscleGroup":"Calves","dayTags":[],"sets":3,"restSec":60},{"id":72,"exercise":"Seated Calf Raise","gymVariant":"Seated calf raise machine","homeVariant":"Seated on a chair, weight (backpack or heavy object) across the knees, heels on a book/step edge","variants":"","setsReps":"3 x 12-20","rest":"","execution":"Setup: Knees under the pad, balls of feet on the platform edge.\nRaise: Rise onto the toes, pause at the top.\nLower: Lower under control into a full stretch.","watchouts":"Same bounce-avoidance as standing raises - the soleus responds better to controlled tension than to fast reps.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Calves","category":"Calf (soleus-dominant)"}],"muscleGroup":"Calves","dayTags":[],"sets":3,"restSec":60},{"id":73,"exercise":"Donkey Calf Raise","gymVariant":"Donkey calf raise machine, or hinge forward holding support with weight on hips","homeVariant":"Hinged forward holding a table/chair for support, backpack on hips or a partner-style light load","variants":"","setsReps":"3 x 12-20","rest":"","execution":"Setup: Hinge forward at the hips, balls of feet on an elevated edge.\nRaise: Rise onto the toes, pause at the top, squeeze the calf.\nLower: Lower into a full stretch.","watchouts":"The forward-hinged position increases the stretch on the calf - keep the movement slow and controlled rather than bouncing.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Calves","category":"Calf (gastrocnemius-dominant)"}],"muscleGroup":"Calves","dayTags":[],"sets":3,"restSec":60},{"id":74,"exercise":"Single-Leg Calf Raise","gymVariant":"Bodyweight, add a dumbbell in the free hand for load","homeVariant":"Bodyweight on a stair edge, holding a rail for balance","variants":"","setsReps":"3 x 12-15/leg","rest":"","execution":"Setup: Balance on one foot, ball of foot on a step edge, hold something for balance.\nRaise: Rise onto the toes, pause at the top.\nLower: Lower into a full stretch.","watchouts":"Useful for catching left-right imbalances that a two-footed raise can hide - if one side fatigues much faster, give it extra attention.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Calves","category":"Calf (unilateral)"}],"muscleGroup":"Calves","dayTags":[],"sets":3,"restSec":60},{"id":75,"exercise":"Hammer Curl","gymVariant":"Dumbbells, neutral grip","homeVariant":"Dumbbells or any household object gripped vertically (e.g. a bottle)","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Palms facing each other, elbows pinned at your sides.\nCurl: Curl straight up keeping the neutral grip throughout.\nLower: Extend fully under control.","watchouts":"Same fault as standard curls - watch for torso swing creeping in as the set gets hard.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Biceps","category":"Elbow flexion (brachialis/forearm)"}],"muscleGroup":"Biceps","dayTags":[],"sets":3,"restSec":60},{"id":76,"exercise":"Cable Curl","gymVariant":"Cable stack, low pulley with straight or EZ bar","homeVariant":"Resistance band anchored under your feet","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Grip the bar, elbows pinned at your sides.\nCurl: Curl up under constant tension (the cable doesn't go slack like a dumbbell can at the top).\nLower: Extend fully under control.","watchouts":"Keep elbows fixed at your sides throughout - letting them drift forward reduces bicep tension and can strain the shoulder.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Biceps","category":"Elbow flexion"}],"muscleGroup":"Biceps","dayTags":[],"sets":3,"restSec":60},{"id":77,"exercise":"Chin-Up","gymVariant":"Pull-up bar, underhand grip","homeVariant":"Pull-up bar if available; otherwise substitute Cable/Band Curl for extra volume","variants":"","setsReps":"3 x 6-10","rest":"","execution":"Setup: Underhand, shoulder-width grip, full hang.\nPull: Pull chin over the bar, driving elbows down.\nLower: Control the descent to a full hang.","watchouts":"Don't kip or swing to complete reps while rebuilding - if strict reps aren't available yet, use an assisted machine or band.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Biceps","category":"Elbow flexion + vertical pull"}],"muscleGroup":"Biceps","dayTags":[],"sets":3,"restSec":60},{"id":78,"exercise":"Preacher Curl","gymVariant":"Preacher bench + barbell/EZ bar or dumbbell","homeVariant":"Back of a chair angled as a makeshift preacher pad, or seated with elbow braced on your inner thigh","variants":"","setsReps":"3 x 10-12","rest":"","execution":"Setup: Back of the upper arm flat against the pad, grip the bar/dumbbell.\nCurl: Curl up without letting the upper arm lift off the pad.\nLower: Extend fully, allowing a deep stretch at the bottom.","watchouts":"Don't bounce out of the bottom stretch position - this is a common place to strain the biceps tendon, especially with heavier loads.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Biceps","category":"Elbow flexion (strict isolation)"}],"muscleGroup":"Biceps","dayTags":[],"sets":3,"restSec":60},{"id":79,"exercise":"Concentration Curl","gymVariant":"Single dumbbell, seated","homeVariant":"Single dumbbell or a heavy household object, seated","variants":"","setsReps":"3 x 10-12/side","rest":"","execution":"Setup: Seated, elbow braced against the inside of your thigh, arm hanging down.\nCurl: Curl up focusing on squeezing the bicep at the top.\nLower: Extend fully under control.","watchouts":"Keep the elbow pinned against the thigh throughout - letting it drift is the main way people cheat this exercise.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Biceps","category":"Elbow flexion (peak contraction)"}],"muscleGroup":"Biceps","dayTags":[],"sets":3,"restSec":60},{"id":80,"exercise":"Incline Dumbbell Curl","gymVariant":"Incline bench + dumbbells","homeVariant":"Reclined against a couch arm or stack of cushions at a similar angle","variants":"","setsReps":"3 x 10-12","rest":"","execution":"Setup: Sit back on an incline bench, arms hanging straight down.\nCurl: Curl up without letting the elbows drift forward off your sides.\nLower: Extend fully into a deep stretch.","watchouts":"The reclined position increases the stretch on the biceps at the bottom - use lighter weight than a standing curl to start.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Biceps","category":"Elbow flexion (long head stretch)"}],"muscleGroup":"Biceps","dayTags":[],"sets":3,"restSec":60},{"id":81,"exercise":"Reverse Curl","gymVariant":"Barbell or EZ bar, overhand grip","homeVariant":"Loaded backpack or a heavy household object, overhand grip","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Overhand (palms down) grip, elbows pinned at your sides.\nCurl: Curl up keeping the overhand grip throughout.\nLower: Extend fully under control.","watchouts":"Use lighter weight than your standard curl - the wrist position makes this harder to load heavily with good form.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Biceps","category":"Elbow flexion (forearm/brachialis)"}],"muscleGroup":"Biceps","dayTags":[],"sets":3,"restSec":60},{"id":82,"exercise":"Overhead Triceps Extension","gymVariant":"Dumbbell or cable, overhead position","homeVariant":"Single dumbbell or a loaded backpack held with both hands","variants":"","setsReps":"3 x 10-15","rest":"","execution":"Setup: Elbows pointed forward, weight held overhead.\nLower: Lower the weight behind the head under control, elbows stay still.\nExtend: Extend back to overhead.","watchouts":"Keep elbows from flaring out wide - this is both less effective and puts more strain on the elbow joint.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Triceps","category":"Elbow extension (long head)"}],"muscleGroup":"Triceps","dayTags":[],"sets":3,"restSec":60},{"id":83,"exercise":"Close-Grip Bench or Bench Dip","gymVariant":"Close-grip barbell bench press, or dip station","homeVariant":"Bench dip using a sturdy chair or the edge of a couch","variants":"","setsReps":"3 x 8-12","rest":"","execution":"Close-grip bench: hands just inside shoulder width, elbows tucked close to the torso through the lowering phase, press back to lockout.\nBench dip: hands behind you on a chair, lower until elbows reach roughly 90 degrees, press back up.","watchouts":"For bench dips, don't drop deeper than a 90-degree elbow bend - excessive depth is a common cause of shoulder strain.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Triceps","category":"Elbow extension + push"}],"muscleGroup":"Triceps","dayTags":[],"sets":3,"restSec":60},{"id":84,"exercise":"Diamond Push-Up","gymVariant":"Optional: feet elevated for more load","homeVariant":"Standard, hands together forming a diamond shape under the chest","variants":"","setsReps":"3 x max quality reps (aim 8-15)","rest":"","execution":"Setup: Hands close together under the chest forming a diamond.\nLower: Lower under control, elbows tracking back rather than flaring out.\nPress: Press back to lockout.","watchouts":"If elbows or wrists complain, widen the hand position slightly - a true diamond isn't mandatory to get the triceps emphasis.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Triceps","category":"Elbow extension + push (bodyweight)"}],"muscleGroup":"Triceps","dayTags":[],"sets":3,"restSec":60},{"id":85,"exercise":"Skull Crusher","gymVariant":"Barbell, EZ bar, or dumbbells, lying on a bench","homeVariant":"Lying on the floor with dumbbells or a loaded backpack","variants":"","setsReps":"3 x 10-12","rest":"","execution":"Setup: Lie on a bench, weight held above your chest, upper arms vertical.\nLower: Lower the weight toward your forehead by bending only at the elbow.\nExtend: Extend back to the start without moving the upper arms.","watchouts":"Keep the upper arms fixed and vertical throughout - letting the elbows drift back toward your head is the main way this strains the elbow joint.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Triceps","category":"Elbow extension"}],"muscleGroup":"Triceps","dayTags":[],"sets":3,"restSec":60},{"id":86,"exercise":"Triceps Kickback","gymVariant":"Dumbbell, bent over or braced on a bench","homeVariant":"Dumbbell or a light household object, bent over","variants":"","setsReps":"3 x 12-15/side","rest":"","execution":"Setup: Hinge forward, upper arm parallel to the floor, elbow bent 90 degrees.\nExtend: Extend the forearm straight back, squeeze at full extension.\nReturn: Control the return.","watchouts":"Keep the upper arm still throughout - swinging the whole arm turns this into a shoulder movement and takes tension off the triceps.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Triceps","category":"Elbow extension (isolation)"}],"muscleGroup":"Triceps","dayTags":[],"sets":3,"restSec":60},{"id":87,"exercise":"JM Press","gymVariant":"Barbell, lying on a bench","homeVariant":"Not easily replicated at home - substitute Skull Crusher or Close-Grip Bench","variants":"","setsReps":"3 x 8-10","rest":"","execution":"Setup: Lie on a bench, grip just inside shoulder width.\nLower: Lower the bar toward your upper chest/neck with elbows tucked, a hybrid between a skull crusher and close-grip press.\nPress: Press back up to lockout.","watchouts":"This is a more advanced, technical movement - build a solid base with Close-Grip Bench and Skull Crushers before adding this one.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Triceps","category":"Elbow extension + push (hybrid)"}],"muscleGroup":"Triceps","dayTags":[],"sets":3,"restSec":60},{"id":88,"exercise":"Tate Press","gymVariant":"Dumbbells, lying on a bench","homeVariant":"Lying on the floor with dumbbells","variants":"","setsReps":"3 x 10-12","rest":"","execution":"Setup: Lie on a bench, dumbbells held above the chest, elbows flared out to the sides, palms facing your feet.\nLower: Lower the dumbbells toward your chest by bending the elbows out to the sides.\nExtend: Extend back to the start.","watchouts":"Keep the weight light while learning this one - the elbows-out position is less mechanically stable than a standard extension.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Muscle Library","section":"Triceps","category":"Elbow extension (isolation)"}],"muscleGroup":"Triceps","dayTags":[],"sets":3,"restSec":60},{"id":89,"exercise":"Leg Swings","gymVariant":"Hold a rack or wall for balance","homeVariant":"Hold a wall, doorframe, or sturdy chair","variants":"","setsReps":"10-12/direction/leg","rest":"","execution":"Setup: Stand next to a support, holding it with one hand.\nMove: Swing one leg forward and back in a controlled arc, then switch to side-to-side swings, gradually increasing range as you go.","watchouts":"Keep the swing controlled, not a wild kick - the goal is to open the hip through its range, not to see how high you can get it.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Dynamic warm-up (hips)"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":90,"exercise":"World's Greatest Stretch","gymVariant":"Open floor space","homeVariant":"Open floor space, identical to gym","variants":"","setsReps":"5-6/side","rest":"","execution":"Setup: Step into a long lunge, both hands on the floor inside the front foot.\nMove: Rotate the torso and reach the inside arm up toward the ceiling, following it with your eyes, then return the hand to the floor and push the hips back to feel a hamstring stretch, repeat the sequence.","watchouts":"Move through the full sequence smoothly rather than holding any one position - this is a dynamic flow, not a static stretch, at this point in the warm-up.","dailyOrder":1,"dailyNotes":"Dynamic - do this first to open everything up before the static holds below.","noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Dynamic warm-up (hips/T-spine/hamstrings)"}],"muscleGroup":"Mobility & Recovery","dayTags":["Daily Routine"],"sets":3,"restSec":60},{"id":91,"exercise":"Ankle Rocks (Dorsiflexion Drill)","gymVariant":"Wall or squat rack upright","homeVariant":"Any wall","variants":"","setsReps":"10-12/side","rest":"","execution":"Setup: Half-kneeling or standing facing a wall, front foot a few cm from it.\nMove: Rock the front knee forward over the toes toward the wall without the heel lifting, controlled and repeated.","watchouts":"Directly relevant to squat depth - if your ankles feel stiff here, expect it to show up as reduced squat depth or the heels lifting under load.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Dynamic warm-up (ankles)"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":92,"exercise":"Band Pull-Apart","gymVariant":"Light resistance band","homeVariant":"Light resistance band (cheap, worth owning for warm-ups)","variants":"","setsReps":"15-20","rest":"","execution":"Setup: Hold the band at shoulder height, arms extended in front of you, shoulder-width grip.\nMove: Pull the band apart by driving the shoulder blades together, control the return.","watchouts":"Keep the movement in the upper back, not by shrugging the shoulders up - a good primer before any pressing work.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Dynamic warm-up (shoulders/upper back)"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":93,"exercise":"90-90 Hip Switch","gymVariant":"Mat or floor","homeVariant":"Floor, identical to gym","variants":"","setsReps":"6-8/side","rest":"","execution":"Setup: Sit with both knees bent 90 degrees, one leg in front rotated in, one leg to the side rotated out.\nMove: Lift both knees slightly and rotate them to switch sides, keeping the torso upright.","watchouts":"Move slowly and keep the torso tall throughout - the rotation should come from the hips, not from leaning the torso to help.","dailyOrder":2,"dailyNotes":"Flows naturally from World's Greatest Stretch - keep the torso tall throughout.","noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Mobility drill (hips)"}],"muscleGroup":"Mobility & Recovery","dayTags":["Daily Routine"],"sets":3,"restSec":60},{"id":94,"exercise":"Thoracic Spine Rotation (Open Book)","gymVariant":"Mat or floor","homeVariant":"Floor, identical to gym","variants":"","setsReps":"8-10/side","rest":"","execution":"Setup: Lie on your side, knees stacked and bent 90 degrees, arms extended together in front of you.\nMove: Rotate the top arm up and across to the opposite side, following it with your eyes, keeping the knees pinned together, then return.","watchouts":"Keep the knees stacked and still throughout - if they roll open, the rotation is coming from the hips instead of the upper back, which defeats the point.","dailyOrder":6,"dailyNotes":"Keep the knees stacked and still so the rotation comes from the upper back, not the hips.","noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Mobility drill (upper back)"}],"muscleGroup":"Mobility & Recovery","dayTags":["Daily Routine"],"sets":3,"restSec":60},{"id":95,"exercise":"Cat-Cow","gymVariant":"Mat or floor","homeVariant":"Floor, identical to gym","variants":"","setsReps":"8-10 slow cycles","rest":"","execution":"Setup: On hands and knees, hands under shoulders, knees under hips.\nMove: Alternate between arching the back and dropping the belly (cow) and rounding the spine toward the ceiling (cat), moving with your breath.","watchouts":"Move slowly and let each vertebra articulate through the range rather than rushing - this is a gentle spinal mobility drill, not a stretch to push hard into.","dailyOrder":null,"noEquipment":true,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Mobility drill (spine)"},{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Acute - Gentle mobilization"}],"crossRef":null,"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":96,"exercise":"Couch Stretch","gymVariant":"Bench or wall for the back foot","homeVariant":"Couch or sofa, back foot up on the cushion","variants":"","setsReps":"30-45 sec/side","rest":"","execution":"Setup: Kneel in front of a couch/bench, rear foot up against it (shin vertical, foot resting on the surface).\nHold: Drive the hips forward and squeeze the glute on the stretched side until you feel a stretch down the front of the hip/thigh, keep the torso upright.","watchouts":"Relevant after squat/deadlift days where the hip flexors are heavily involved - go only as deep as feels like a stretch, not a strain, especially in weeks 1-3.","dailyOrder":3,"dailyNotes":"Go only as deep as feels like a stretch, especially first thing in the morning.","noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Static stretch (hip flexors)"}],"muscleGroup":"Mobility & Recovery","dayTags":["Daily Routine"],"sets":3,"restSec":60},{"id":97,"exercise":"Doorway Pec Stretch","gymVariant":"Any doorway or squat rack upright","homeVariant":"Any doorway","variants":"","setsReps":"30 sec/side","rest":"","execution":"Setup: Place forearm on a doorframe or upright, elbow roughly shoulder height.\nHold: Step through the doorway slightly until you feel a stretch across the chest and front of the shoulder.","watchouts":"Do this after pressing days (Day 1/Day 2) - stretching a joint that's already fatigued too aggressively can feel worse than it should, so ease into it.","dailyOrder":5,"dailyNotes":"Directly counters the shoulders-rolled-forward desk posture.","noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Static stretch (chest/front shoulder)"}],"muscleGroup":"Mobility & Recovery","dayTags":["Daily Routine"],"sets":3,"restSec":60},{"id":98,"exercise":"Standing or Seated Hamstring Stretch","gymVariant":"Bench to elevate the foot, or seated on the floor","homeVariant":"Floor, seated, or a chair to elevate the foot","variants":"","setsReps":"30-45 sec/side","rest":"","execution":"Setup: Either seated with legs extended, or standing with one heel on a low bench, leg straight.\nHold: Hinge forward from the hips (not rounding the upper back) until you feel a stretch through the back of the thigh.","watchouts":"Relevant after deadlift/RDL days - keep a flat back through the hinge, the same cue as the lift itself, rather than rounding to reach further.","dailyOrder":4,"dailyNotes":"Hinge from the hips with a flat back - same cue as your deadlift setup.","noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Static stretch (hamstrings)"}],"muscleGroup":"Mobility & Recovery","dayTags":["Daily Routine"],"sets":3,"restSec":60},{"id":99,"exercise":"Child's Pose with Lat Reach","gymVariant":"Mat or floor","homeVariant":"Floor, identical to gym","variants":"","setsReps":"30-45 sec","rest":"","execution":"Setup: Kneel and sit back onto your heels, arms extended forward on the floor.\nHold: Walk the hands slightly to one side to feel a stretch down the opposite lat, then switch sides.","watchouts":"Good after row/pulldown-heavy days - breathe into the stretch rather than forcing extra reach with the arms.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Static stretch (lats/lower back)"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":100,"exercise":"Figure-4 Glute Stretch","gymVariant":"Bench or floor","homeVariant":"Floor or a chair","variants":"","setsReps":"30-45 sec/side","rest":"","execution":"Setup: Lying on your back (or seated in a chair), cross one ankle over the opposite knee.\nHold: Pull the uncrossed thigh toward your chest until you feel a stretch through the crossed leg's glute.","watchouts":"Relevant after squat/lunge-heavy days - keep the crossed foot flexed rather than pointed to protect the knee of the crossed leg.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Static stretch (glutes/hips)"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":101,"exercise":"Wall Slide (Wall Angel)","gymVariant":"Flat wall, or the flat side of a squat rack upright","homeVariant":"Any flat wall, identical to gym","variants":"","setsReps":"10-12","rest":"","execution":"Setup: Stand with head, upper back, and glutes against a wall, feet a small step forward, arms raised into a 'goalpost' position with elbows and wrists touching the wall.\\nMove: Slide the arms slowly up overhead as far as you can while keeping your forearms and lower back in contact with the wall, then slide back down to the start.","watchouts":"If your lower back arches off the wall or your forearms peel away as you raise your arms, that's the edge of your current range - stop there rather than forcing higher. Range improves with practice; don't rush it.","dailyOrder":7,"dailyNotes":"Targets the hunch directly by training the muscles that pull the shoulder blades back and down.","noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Mobility drill (shoulders/upper back posture)"}],"muscleGroup":"Mobility & Recovery","dayTags":["Daily Routine"],"sets":3,"restSec":60},{"id":102,"exercise":"Chin Tuck","gymVariant":"Standing or seated, no equipment","homeVariant":"Standing or seated, identical to gym","variants":"","setsReps":"10-12 reps, hold 2 sec","rest":"","execution":"Setup: Sit or stand tall, look straight ahead.\\nMove: Without tilting your head down, draw your chin straight back to make a 'double chin', hold briefly, feeling a stretch at the base of the skull, then release.","watchouts":"This is a subtle retraction, not a nod - if your head tips down or up, you're using the wrong muscles. A small range of motion is normal and correct here.","dailyOrder":8,"dailyNotes":"Counters forward head posture from screen work - small range of motion is correct.","noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Stretching & Mobility","category":"Mobility/postural drill (neck/upper back)"}],"muscleGroup":"Mobility & Recovery","dayTags":["Daily Routine"],"sets":3,"restSec":60},{"id":103,"exercise":"Child's Pose (Decompression)","gymVariant":"Mat or floor","homeVariant":"Floor, identical to gym","variants":"","setsReps":"30-60 sec","rest":"","execution":"Setup: Kneel and sit back onto your heels, arms stretched forward on the floor.\nHold: Relax into the position and breathe into your lower back, letting it round and release with each exhale.","watchouts":"This should feel like relief, not a stretch you're pushing into. If it increases pain rather than easing it, stop and reassess.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Acute - Decompression"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":104,"exercise":"Knee-to-Chest Stretch","gymVariant":"Mat or floor","homeVariant":"Floor, identical to gym","variants":"","setsReps":"30-45 sec, both legs together or one at a time","rest":"","execution":"Setup: Lie on your back, knees bent, feet flat.\nMove: Gently pull one or both knees toward your chest using your hands, keeping the lower back relaxed against the floor.","watchouts":"Pull gently, don't yank - if one leg feels noticeably worse than the other, do them one at a time rather than both together.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Acute - Decompression"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":105,"exercise":"Dead Hang","gymVariant":"Pull-up bar","homeVariant":"Pull-up bar if available; if not, skip rather than improvising an unstable substitute","variants":"","setsReps":"10-15 sec, build up gradually","rest":"","execution":"Setup: Grip a pull-up bar, feet off the floor, arms fully extended.\nHold: Let your body hang fully relaxed, allowing gravity to gently traction the spine.","watchouts":"Only do this if you can get down with control - if grip or shoulders are also fatigued, this isn't the day for it. Stop immediately if it aggravates rather than relieves.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Acute - Decompression"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":106,"exercise":"Glute Bridge","gymVariant":"Bodyweight, add a light band above the knees once easy","homeVariant":"Bodyweight on the floor","variants":"","setsReps":"2-3 x 12-15","rest":"","execution":"Setup: Lie on your back, knees bent, feet flat, arms at your sides.\nMove: Drive through the heels, lift the hips until your body forms a straight line knee-to-shoulder, squeeze the glutes at the top without over-arching the lower back.","watchouts":"Weak glutes are a common reason the lower back overcompensates during squats and deadlifts - this rebuilds that link directly. Stop the range short of any lower-back arching.","dailyOrder":null,"noEquipment":true,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Phase 1 - Foundational stability"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":107,"exercise":"Light Romanian Deadlift (Hinge Pattern)","gymVariant":"Empty bar or light dumbbells","homeVariant":"Light dumbbells, a loaded backpack, or bodyweight hip hinge with hands on hips","variants":"","setsReps":"2-3 x 10-12, very light","rest":"","execution":"Setup: Hold the weight at hip height, feet hip-width, soft bend in the knees.\nHinge: Push hips back keeping the weight close to your legs, chest up, spine neutral, stop well short of a full stretch.\nReturn: Drive hips forward to standing, squeeze glutes.","watchouts":"The goal here is pattern, not load - use a weight that feels almost too light. Any hint of the lower back rounding or discomfort means you're not ready to add load yet.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Phase 2 - Build-up"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":108,"exercise":"Back Extension (Hyperextension Bench)","gymVariant":"45-degree or horizontal hyperextension bench","homeVariant":"Bodyweight 'Superman' on the floor as a substitute (lie face down, gently lift chest and legs a few cm)","variants":"","setsReps":"2-3 x 10-15, controlled, not to full extension","rest":"","execution":"Setup: Hips on the pad, ankles secured, start with the torso bent forward.\nMove: Raise the torso in a controlled manner to roughly a flat line with your legs - do not hyperextend past straight.\nLower: Lower back down under control.","watchouts":"Do not extend past a straight line at the top - going into a backward arch defeats the purpose and can aggravate the same tissue you're rehabbing.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Phase 2 - Build-up"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":109,"exercise":"Farmer's Carry","gymVariant":"Dumbbells or a trap bar","homeVariant":"Two heavy bags, filled water jugs, or suitcases","variants":"","setsReps":"2-3 x 20-30 sec walk","rest":"","execution":"Setup: Stand tall, a weight in each hand, shoulders back and down, core braced.\nWalk: Walk with controlled steps, keeping the torso upright and avoiding any side-to-side lean.","watchouts":"Surprisingly effective for lower-back and core stability under load without spinal flexion/extension - keep the weight light enough that posture never breaks down.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Mobility & Recovery","section":"Lower Back Recovery","category":"Phase 2 - Build-up"}],"muscleGroup":"Mobility & Recovery","dayTags":[],"sets":3,"restSec":60},{"id":51,"exercise":"Barbell or Dumbbell Overhead Press","gymVariant":"Barbell/dumbbell (your Day 3 secondary lift)","homeVariant":"Dumbbells, or resistance band anchored under your feet","variants":"","setsReps":"See Day sheets / 3 x 6-10","rest":"2 min","execution":"Setup: Bar/dumbbells at shoulder height, grip just outside shoulders, elbows slightly in front of the bar, feet hip-width.\nBrace: Brace your core hard, squeeze your glutes to stop your ribs from flaring/lower back from arching.\nPress: Press straight up, moving your head slightly back then forward through the 'window' as the bar passes your face, finishing with the bar directly over your mid-foot and your ears between your arms.\nLower: Control the bar back down along the same path to the starting position.","watchouts":"Don't lean back excessively to press - this turns it into an incline press and stresses the lower back. Keep wrists stacked over elbows, not bent back, to avoid wrist strain.","dailyOrder":null,"noEquipment":false,"crossRef":null,"contexts":[{"sectionGroup":"Workout Days","section":"Day 3 (Deadlift Focus)","category":"Secondary"},{"sectionGroup":"Muscle Library","section":"Shoulders","category":"Vertical push"}],"muscleGroup":"Shoulders","dayTags":["Day 3 (Deadlift Focus)"],"sets":3,"restSec":120}];
+
+
+
+// ---------- Weight log (localStorage, last entry only) ----------
+const LOG_KEY = 'rackref_logs_v1';
+function loadLogs(){
+  try { return JSON.parse(localStorage.getItem(LOG_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveLogs(logs){
+  try { localStorage.setItem(LOG_KEY, JSON.stringify(logs)); } catch(e) { /* storage unavailable */ }
+}
+let LOGS = loadLogs();
+
+// Best-effort: ask the browser not to auto-evict this site's storage under pressure.
+// This does NOT protect against the user deliberately clearing site data.
+if(navigator.storage && navigator.storage.persist){
+  navigator.storage.persist().catch(() => {});
+}
+
+function normEx(name){ return name.trim().toLowerCase(); }
+function getLast(name){
+  const entry = LOGS[normEx(name)];
+  if(!entry) return null;
+  return entry;
+}
+function setLast(name, weight, reps){
+  LOGS[normEx(name)] = { weight, reps, date: new Date().toISOString().slice(0,10) };
+  saveLogs(LOGS);
+}
+function formatLast(entry){
+  if(!entry) return '<span class="log-last empty">No weight logged yet</span>';
+  return `<span class="log-last">Last: <b>${entry.weight} kg</b> × <b>${entry.reps}</b></span>`;
+}
+
+const LINKS = {"90-90 Hip Switch":{"url":"https://www.healthline.com/health/fitness/90-90-stretch","verified":true},"Ab Wheel Rollout":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Ab%20Wheel%20Rollout%22","verified":false},"Ankle Rocks (Dorsiflexion Drill)":{"url":"https://www.peak-physio.com.au/exercise/ankle-dorsiflexion-knee-to-wall/","verified":true},"Arnold Press":{"url":"https://musclewiki.com/exercise/dumbbell-arnold-press","verified":true},"Back Extension (Hyperextension Bench)":{"url":"https://www.catalystathletics.com/exercise/425/Back-Extension-Hyperextension/","verified":true},"Back Squat":{"url":"https://musclewiki.com/exercise/barbell-squat","verified":true},"Band Pull-Apart":{"url":"https://www.hingehealth.com/resources/articles/band-pull-aparts/","verified":true},"Barbell Bench Press":{"url":"https://musclewiki.com/exercise/barbell-bench-press","verified":true},"Barbell or Dumbbell Overhead Press":{"url":"https://musclewiki.com/exercise/barbell-overhead-press","verified":true},"Barbell or Dumbbell Row":{"url":"https://musclewiki.com/exercise/barbell-bent-over-row","verified":true},"Barbell or Trap-Bar Deadlift":{"url":"https://musclewiki.com/exercise/barbell-deadlift","verified":true},"Bench Press":{"url":"https://musclewiki.com/exercise/barbell-bench-press","verified":true},"Bird Dog":{"url":"https://musclewiki.com/exercise/bird-dog","verified":true},"Bulgarian Split Squat":{"url":"https://musclewiki.com/exercise/dumbbell-bulgarian-split-squat","verified":true},"Cable Crossover (Low-to-High)":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Cable%20Crossover%20%28Low-to-High%29%22","verified":false},"Cable Curl":{"url":"https://musclewiki.com/exercise/cable-bar-curl","verified":true},"Cable Lateral Raise":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Cable%20Lateral%20Raise%22","verified":false},"Cable Pallof Press":{"url":"https://musclewiki.com/exercise/cable-pallof-press","verified":true},"Cable Pull-Through":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Cable%20Pull-Through%22","verified":false},"Cable Triceps Pushdown":{"url":"https://musclewiki.com/exercise/cable-rope-pushdown","verified":true},"Cable Woodchop":{"url":"https://musclewiki.com/exercise/cable-wood-chopper","verified":true},"Cable Y-Raise":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Cable%20Y-Raise%22","verified":false},"Cable or Dumbbell Fly":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Cable%20or%20Dumbbell%20Fly%22","verified":false},"Cat-Cow":{"url":"https://www.google.com/search?q=Cat-Cow%20stretch%20how%20to","verified":false},"Chest-Supported Cable Row":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Chest-Supported%20Cable%20Row%22","verified":false},"Child's Pose (Decompression)":{"url":"https://www.hingehealth.com/resources/articles/childs-pose","verified":true},"Child's Pose with Lat Reach":{"url":"https://www.hingehealth.com/resources/articles/childs-pose","verified":true},"Chin Tuck":{"url":"https://www.hingehealth.com/resources/articles/chin-tucks/","verified":true},"Chin-Up":{"url":"https://musclewiki.com/exercise/chin-ups","verified":true},"Close-Grip Bench or Bench Dip":{"url":"https://musclewiki.com/exercise/barbell-close-grip-bench-press","verified":true},"Concentration Curl":{"url":"https://musclewiki.com/exercise/dumbbell-concentration-curl","verified":true},"Conventional Deadlift":{"url":"https://musclewiki.com/exercise/barbell-deadlift","verified":true},"Couch Stretch":{"url":"https://www.healthline.com/health/couch-stretch","verified":true},"Dead Bug":{"url":"https://musclewiki.com/exercise/dead-bug","verified":true},"Dead Hang":{"url":"https://musclewiki.com/exercise/dead-hang","verified":true},"Decline Bench Press":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Decline%20Bench%20Press%22","verified":false},"Diamond Push-Up":{"url":"https://musclewiki.com/exercise/diamond-push-ups","verified":true},"Dip (chest-leaning variant)":{"url":"https://musclewiki.com/exercise/bench-dips","verified":true},"Donkey Calf Raise":{"url":"https://musclewiki.com/exercise/bodyweight-donkey-calf-raise","verified":true},"Doorway Pec Stretch":{"url":"https://www.getwellen.com/exercises/doorway-pec-stretch","verified":true},"Dumbbell Bicep Curl":{"url":"https://musclewiki.com/exercise/dumbbell-curl","verified":true},"Face Pull":{"url":"https://musclewiki.com/exercise/cable-bar-face-pull","verified":true},"Farmer's Carry":{"url":"https://www.google.com/search?q=Farmer%27s%20Carry%20stretch%20how%20to","verified":false},"Figure-4 Glute Stretch":{"url":"https://www.hingehealth.com/resources/articles/figure-four/","verified":true},"Front Raise":{"url":"https://musclewiki.com/exercise/dumbbell-front-raise","verified":true},"Front or Goblet Squat":{"url":"https://musclewiki.com/exercise/dumbbell-goblet-squat","verified":true},"Glute Bridge":{"url":"https://blog.nasm.org/how-to-do-a-glute-bridge","verified":true},"Good Morning":{"url":"https://musclewiki.com/exercise/barbell-high-bar-good-morning","verified":true},"Hack Squat":{"url":"https://musclewiki.com/exercise/machine-hack-squat","verified":true},"Hammer Curl":{"url":"https://musclewiki.com/exercise/dumbbell-hammer-curl","verified":true},"Hanging Knee/Leg Raise":{"url":"https://musclewiki.com/exercise/hanging-knee-raises","verified":true},"Hip Thrust / Glute Bridge":{"url":"https://musclewiki.com/exercise/barbell-hip-thrust","verified":true},"Incline Dumbbell Curl":{"url":"https://musclewiki.com/exercise/dumbbell-incline-curl","verified":true},"Incline Dumbbell Press":{"url":"https://musclewiki.com/exercise/dumbbell-incline-bench-press","verified":true},"JM Press":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22JM%20Press%22","verified":false},"Kettlebell Around-the-Head Pass":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Kettlebell%20Around-the-Head%20Pass%22","verified":false},"Knee-to-Chest Stretch":{"url":"https://www.healthline.com/nutrition/stretches-for-lower-back-pain","verified":true},"Landmine Press":{"url":"https://musclewiki.com/exercise/landmine-overhead-press","verified":true},"Lat Pulldown":{"url":"https://musclewiki.com/exercise/cable-lat-pulldown","verified":true},"Lat Pulldown or Pull-Up":{"url":"https://musclewiki.com/exercise/cable-lat-pulldown","verified":true},"Lateral Raise":{"url":"https://musclewiki.com/exercise/dumbbell-lateral-raise","verified":true},"Leg Press":{"url":"https://musclewiki.com/exercise/machine-leg-press","verified":true},"Leg Swings":{"url":"https://fitbod.me/exercises/leg-swing","verified":true},"Light Romanian Deadlift (Hinge Pattern)":{"url":"https://musclewiki.com/exercise/dumbbell-romanian-deadlift","verified":true},"Lying Leg Raise":{"url":"https://musclewiki.com/exercise/laying-leg-raises","verified":true},"Machine Leg Curl":{"url":"https://musclewiki.com/exercise/machine-seated-leg-curl","verified":true},"Machine Leg Extension":{"url":"https://musclewiki.com/exercise/machine-leg-extension","verified":true},"Overhead Press":{"url":"https://musclewiki.com/exercise/barbell-overhead-press","verified":true},"Overhead Triceps Extension":{"url":"https://musclewiki.com/exercise/dumbbell-overhead-tricep-extension","verified":true},"Pike Push-Up":{"url":"https://musclewiki.com/exercise/bodyweight-pike-press","verified":true},"Plank":{"url":"https://musclewiki.com/exercise/forearm-plank","verified":true},"Preacher Curl":{"url":"https://musclewiki.com/exercise/ez-bar-preacher-curl","verified":true},"Pull-Up / Assisted Pull-Up or Lat Pulldown":{"url":"https://musclewiki.com/exercise/pull-ups","verified":true},"Push-Up":{"url":"https://musclewiki.com/bodyweight/male/chest/push-up","verified":true},"Rear Delt Fly":{"url":"https://musclewiki.com/exercise/dumbbell-rear-delt-fly","verified":true},"Reverse Curl":{"url":"https://musclewiki.com/exercise/barbell-reverse-curl","verified":true},"Reverse Lunge":{"url":"https://musclewiki.com/exercise/dumbbell-reverse-lunge","verified":true},"Romanian Deadlift":{"url":"https://musclewiki.com/exercise/barbell-romanian-deadlift","verified":true},"Russian Twist":{"url":"https://musclewiki.com/exercise/dumbbell-russian-twist","verified":true},"Seated Cable Row":{"url":"https://musclewiki.com/exercise/machine-seated-cable-row","verified":true},"Seated Calf Raise":{"url":"https://musclewiki.com/exercise/seated-calf-raise","verified":true},"Shrug":{"url":"https://musclewiki.com/exercise/dumbbell-shrug","verified":true},"Side Plank":{"url":"https://musclewiki.com/exercise/elbow-side-plank","verified":true},"Single-Arm Dumbbell Row":{"url":"https://musclewiki.com/exercise/dumbbell-single-arm-row","verified":true},"Single-Leg Calf Raise":{"url":"https://musclewiki.com/exercise/bodyweight-single-leg-calf-raise","verified":true},"Single-Leg Romanian Deadlift":{"url":"https://musclewiki.com/exercise/dumbbell-romanian-deadlift","verified":true},"Skull Crusher":{"url":"https://musclewiki.com/exercise/dumbbell-skullcrusher","verified":true},"Standing Calf Raise":{"url":"https://musclewiki.com/exercise/standing-calf-raise","verified":true},"Standing or Seated Calf Raise":{"url":"https://musclewiki.com/exercise/standing-calf-raise","verified":true},"Standing or Seated Hamstring Stretch":{"url":"https://www.hingehealth.com/resources/articles/hamstring-stretch/","verified":true},"Step-Up":{"url":"https://musclewiki.com/exercise/dumbbell-step-up","verified":true},"Straight-Arm Pulldown":{"url":"https://musclewiki.com/exercise/cable-straight-arm-pulldown","verified":true},"Tate Press":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Tate%20Press%22","verified":false},"Thoracic Spine Rotation (Open Book)":{"url":"https://liftmanual.com/open-book-stretch/","verified":true},"Triceps Kickback":{"url":"https://musclewiki.com/exercise/dumbbell-tricep-kickback","verified":true},"Upright Row":{"url":"https://musclewiki.com/exercise/barbell-upright-row","verified":true},"Walking Lunge":{"url":"https://www.google.com/search?q=site:musclewiki.com+%22Walking%20Lunge%22","verified":false},"Wall Sit":{"url":"https://musclewiki.com/exercise/wall-sit","verified":true},"Wall Slide (Wall Angel)":{"url":"https://www.healthline.com/health/fitness/wall-angels","verified":true},"Weighted Sit-Up":{"url":"https://musclewiki.com/exercise/plate-situp","verified":true},"World's Greatest Stretch":{"url":"https://liftmanual.com/worlds-greatest-stretch/","verified":true}};
+function diagramLinkFor(name){ return LINKS[name] || null; }
+
+const GROUPS = ["All", "Chest", "Back", "Shoulders", "Quads", "Hamstrings & Glutes", "Calves", "Biceps", "Triceps", "Core", "Mobility & Recovery", "Daily Routine"];
+const PROGRAMME_TAGS = ["Day 1 (Squat Focus)", "Day 2 (Bench Focus)", "Day 3 (Deadlift Focus)"];
+
+let state = {
+  query: "",
+  group: "All",
+  sections: new Set(),  // sub-sections within Mobility & Recovery only
+  programmes: new Set(),  // Day 1 / Day 2 / Day 3 / Daily Routine tag filters
+  noEquipmentOnly: false
+};
+
+const groupRow = document.getElementById('groupRow');
+const sectionRow = document.getElementById('sectionRow');
+const programmeRow = document.getElementById('programmeRow');
+const equipmentRow = document.getElementById('equipmentRow');
+const grid = document.getElementById('grid');
+const emptyState = document.getElementById('emptyState');
+const emptyText = document.getElementById('emptyText');
+const resultCount = document.getElementById('resultCount');
+const activeFilterLabel = document.getElementById('activeFilterLabel');
+const searchInput = document.getElementById('searchInput');
+const clearBtn = document.getElementById('clearBtn');
+
+function sectionsForGroup(group){
+  // Sub-section filtering only makes sense within Mobility & Recovery
+  // (Stretching & Mobility vs Lower Back Recovery). Muscle groups are
+  // already the finest level of the primary nav.
+  if(group !== "Mobility & Recovery") return [];
+  const set = new Set();
+  DATA.forEach(e => { e.contexts.forEach(c => { if(c.sectionGroup === "Mobility & Recovery") set.add(c.section); }); });
+  return Array.from(set);
+}
+
+function countFor(filterFn){
+  return DATA.filter(filterFn).length;
+}
+
+function renderGroupChips(){
+  groupRow.innerHTML = '<span class="row-label">Muscle group</span>';
+  GROUPS.forEach(g => {
+    const btn = document.createElement('button');
+    btn.className = 'chip group-chip' + (state.group === g ? ' active' : '');
+    btn.dataset.group = g === "All" ? "" : (g === "Daily Routine" ? "daily" : g);
+    let n;
+    if(g === "All") n = DATA.length;
+    else if(g === "Daily Routine") n = DATA.filter(e => e.dailyOrder).length;
+    else n = countFor(e => e.muscleGroup === g);
+    btn.innerHTML = g + '<span class="count">' + n + '</span>';
+    btn.addEventListener('click', () => {
+      state.group = g;
+      state.sections = new Set();
+      renderGroupChips();
+      renderSectionChips();
+      renderProgrammeChips();
+      renderEquipmentChip();
+      render();
+    });
+    groupRow.appendChild(btn);
+  });
+}
+
+function renderSectionChips(){
+  sectionRow.innerHTML = '';
+  const secs = sectionsForGroup(state.group);
+  if(secs.length === 0){
+    sectionRow.style.display = 'none';
+    return;
+  }
+  sectionRow.style.display = 'flex';
+  const label = document.createElement('span');
+  label.className = 'row-label';
+  label.textContent = 'Section';
+  sectionRow.appendChild(label);
+  secs.forEach(s => {
+    const btn = document.createElement('button');
+    const active = state.sections.has(s);
+    btn.className = 'chip' + (active ? ' active' : '');
+    const n = countFor(e => e.muscleGroup === state.group && e.contexts.some(c => c.section === s));
+    btn.innerHTML = s + '<span class="count">' + n + '</span>';
+    btn.addEventListener('click', () => {
+      if(state.sections.has(s)) state.sections.delete(s);
+      else state.sections.add(s);
+      renderSectionChips();
+      render();
+    });
+    sectionRow.appendChild(btn);
+  });
+}
+
+function renderProgrammeChips(){
+  programmeRow.innerHTML = '<span class="row-label">Programme</span>';
+  PROGRAMME_TAGS.forEach(tag => {
+    const btn = document.createElement('button');
+    const active = state.programmes.has(tag);
+    btn.className = 'chip' + (active ? ' active' : '');
+    const n = countFor(e => e.dayTags.includes(tag));
+    const shortLabel = tag.replace(/ \(.*\)/, ''); // "Day 1 (Squat Focus)" -> "Day 1"
+    btn.innerHTML = shortLabel + '<span class="count">' + n + '</span>';
+    btn.addEventListener('click', () => {
+      if(state.programmes.has(tag)) state.programmes.delete(tag);
+      else state.programmes.add(tag);
+      renderProgrammeChips();
+      render();
+    });
+    programmeRow.appendChild(btn);
+  });
+}
+
+function renderEquipmentChip(){
+  equipmentRow.innerHTML = '';
+  const btn = document.createElement('button');
+  const n = countFor(e => {
+    if(!e.noEquipment) return false;
+    if(state.group === "Daily Routine") return !!e.dailyOrder;
+    if(state.group !== "All") return e.muscleGroup === state.group;
+    return true;
+  });
+  btn.className = 'chip' + (state.noEquipmentOnly ? ' active' : '');
+  btn.innerHTML = '🏠 No equipment needed<span class="count">' + n + '</span>';
+  btn.addEventListener('click', () => {
+    state.noEquipmentOnly = !state.noEquipmentOnly;
+    renderEquipmentChip();
+    render();
+  });
+  equipmentRow.appendChild(btn);
+}
+
+function highlight(text, q){
+  if(!q) return escapeHtml(text);
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if(idx === -1) return escapeHtml(text);
+  return escapeHtml(text.slice(0,idx)) + '<mark>' + escapeHtml(text.slice(idx, idx+q.length)) + '</mark>' + escapeHtml(text.slice(idx+q.length));
+}
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function matchesQuery(e, q){
+  if(!q) return true;
+  const ctxText = e.contexts.map(c => c.category + ' ' + c.section).join(' ');
+  const hay = [e.exercise, ctxText, e.muscleGroup, e.dayTags.join(' '), e.execution, e.watchouts, e.gymVariant, e.homeVariant, e.variants].join(' ').toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+
+function getFiltered(){
+  let list = DATA;
+  if(state.group === "Daily Routine"){
+    list = list.filter(e => e.dailyOrder);
+    list = [...list].sort((a,b) => a.dailyOrder - b.dailyOrder);
+  } else if(state.group !== "All"){
+    list = list.filter(e => e.muscleGroup === state.group);
+    if(state.sections.size > 0){
+      list = list.filter(e => e.contexts.some(c => state.sections.has(c.section)));
+    }
+  }
+  if(state.programmes.size > 0){
+    list = list.filter(e => e.dayTags.some(t => state.programmes.has(t)));
+  }
+  if(state.query){
+    list = list.filter(e => matchesQuery(e, state.query));
+  }
+  if(state.noEquipmentOnly){
+    list = list.filter(e => e.noEquipment);
+  }
+  return list;
+}
+
+function cardHtml(e, q){
+  const groupAttr = e.muscleGroup === "Mobility & Recovery" ? "Mobility & Recovery" : "Muscle Library";
+  const categoryTags = e.contexts.map(c => c.category).filter(Boolean);
+  const dayTagsHtml = e.dayTags.length ? `
+    <div class="day-tags">${e.dayTags.map(t => `<span class="day-tag">${escapeHtml(t.replace(/ \(.*\)/, ''))}</span>`).join('')}</div>` : '';
+  const crossRefHtml = (e.crossRef && e.crossRef.length) ? `
+    <div class="cross-ref">Different prescription elsewhere: ${e.crossRef.map(escapeHtml).join(' · ')}</div>` : '';
+  const gymHome = (e.gymVariant || e.homeVariant) ? `
+    <div class="variant-line"><b>Gym:</b> ${highlight(e.gymVariant||'—', q)}</div>
+    <div class="variant-line"><b>Home:</b> ${highlight(e.homeVariant||'—', q)}</div>` : '';
+  const variantsLine = e.variants ? `<div class="variant-line"><b>Variants:</b> ${highlight(e.variants, q)}</div>` : '';
+  const restPill = e.rest ? `<span class="pill">Rest ${escapeHtml(e.rest)}</span>` : '';
+  const dailyBadge = e.dailyOrder ? `<div class="daily-badge">${e.dailyOrder}</div>` : '';
+
+  const last = getLast(e.exercise);
+  const exAttr = escapeHtml(normEx(e.exercise));
+  const link = diagramLinkFor(e.exercise);
+  const diagramHtml = link ? `
+    <a class="diagram-link${link.verified ? '' : ' fallback'}" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      ${link.verified ? 'View diagram' : 'Search diagram'}
+    </a>` : '';
+
+  return `
+  <article class="card" data-group="${groupAttr}" data-id="${e.id}" data-exercise="${exAttr}">
+    <div class="card-top">
+      <div class="card-top-text">
+        <div class="card-section">${escapeHtml(e.muscleGroup)}</div>
+        <h3 class="card-name">${highlight(e.exercise, q)}</h3>
+        ${diagramHtml}
+      </div>
+      ${dailyBadge}
+    </div>
+    ${dayTagsHtml}
+    <div class="meta-row">
+      ${categoryTags.map(c => `<span class="category-tag">${highlight(c, q)}</span>`).join('')}
+      <span class="pill strong">${escapeHtml(e.setsReps || '—')}</span>
+      ${restPill}
+    </div>
+    ${crossRefHtml}
+    ${gymHome}
+    ${variantsLine}
+    <button class="toggle-btn" data-action="toggle">
+      <span class="toggle-label">Show cues &amp; watch-outs</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="details">
+      <h4>Execution</h4>
+      <p>${highlight(e.execution || '—', q)}</p>
+      <div class="watchout">
+        <h4>Watch-outs</h4>
+        <p>${highlight(e.watchouts || '—', q)}</p>
+      </div>
+    </div>
+    <div class="log-row" data-log-for="${exAttr}">
+      ${formatLast(last)}
+      <div class="log-inputs">
+        <input type="number" inputmode="decimal" class="log-weight" placeholder="kg" min="0" step="0.5">
+        <span class="x">&times;</span>
+        <input type="number" inputmode="numeric" class="log-reps" placeholder="reps" min="0" step="1">
+        <button class="log-save" data-action="log">Log</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+// ---------- Workout builder ----------
+const WORKOUT_DAYS = ["Day 1 (Squat Focus)", "Day 2 (Bench Focus)", "Day 3 (Deadlift Focus)"];
+const PRIORITY_ORDER = ["Primary", "Secondary", "Core", "Isolation"]; // Core kept above Isolation given lower-back rehab priority
+const SETUP_OVERHEAD_SEC = 90;   // walking to equipment, adjusting, warming up
+const WORK_PER_SET_SEC = 40;     // time under tension + transition between sets
+
+let wbState = { day: WORKOUT_DAYS[0] };
+let builtWorkout = null; // {day, items, totalSec, targetSec, dropped: []}
+
+function estimateExerciseSeconds(e){
+  return SETUP_OVERHEAD_SEC + e.sets * (WORK_PER_SET_SEC + e.restSec);
+}
+
+function buildWorkout(day, minutes){
+  const targetSec = minutes * 60;
+  const dayExercises = DATA
+    .filter(e => e.dayTags.includes(day))
+    .map(e => {
+      const ctx = e.contexts.find(c => c.sectionGroup === "Workout Days" && c.section === day);
+      return { e, category: ctx.category, seconds: estimateExerciseSeconds(e) };
+    })
+    .sort((a, b) => PRIORITY_ORDER.indexOf(a.category) - PRIORITY_ORDER.indexOf(b.category));
+
+  const items = [];
+  const dropped = [];
+  let totalSec = 0;
+  dayExercises.forEach(({e, category, seconds}) => {
+    // Always keep Primary even if it blows the budget alone; otherwise only add if it fits.
+    if(category === "Primary" || totalSec + seconds <= targetSec){
+      items.push(e);
+      totalSec += seconds;
+    } else {
+      dropped.push(e.exercise);
+    }
+  });
+
+  return { day, items, totalSec, targetSec, dropped };
+}
+
+function renderWbDays(){
+  const el = document.getElementById('wbDays');
+  el.innerHTML = '';
+  WORKOUT_DAYS.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'wb-day-btn' + (wbState.day === d ? ' active' : '');
+    btn.textContent = d.replace(/ \(.*\)/, '');
+    btn.addEventListener('click', () => {
+      wbState.day = d;
+      renderWbDays();
+    });
+    el.appendChild(btn);
+  });
+}
+
+function formatMinSec(totalSec){
+  const m = Math.round(totalSec / 60);
+  return `~${m} min`;
+}
+
+function renderWbSummary(){
+  const el = document.getElementById('wbSummary');
+  if(!builtWorkout){ el.innerHTML = ''; return; }
+  const over = builtWorkout.totalSec > builtWorkout.targetSec;
+  const overBy = Math.round((builtWorkout.totalSec - builtWorkout.targetSec) / 60);
+  let html = `<div class="wb-summary">`;
+  html += `Built <b>${builtWorkout.items.length}</b> exercises for ${escapeHtml(builtWorkout.day.replace(/ \(.*\)/,''))} — estimated ${formatMinSec(builtWorkout.totalSec)}`;
+  if(over){
+    html += ` <span class="over-budget">(about ${overBy} min over your ${builtWorkout.targetSec/60}-min target — the primary lift alone needs the time)</span>`;
+  }
+  if(builtWorkout.dropped.length){
+    html += `<br>Dropped to fit the time: ${builtWorkout.dropped.map(escapeHtml).join(', ')}`;
+  }
+  html += `<br><button class="exit-btn" id="wbExit">Exit workout view</button></div>`;
+  el.innerHTML = html;
+  document.getElementById('wbExit').addEventListener('click', () => {
+    builtWorkout = null;
+    renderWbSummary();
+    render();
+  });
+}
+
+document.getElementById('wbToggle').addEventListener('click', () => {
+  const panel = document.getElementById('wbPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+});
+document.getElementById('wbBuildBtn').addEventListener('click', () => {
+  const minutes = parseInt(document.getElementById('wbMinutes').value, 10) || 45;
+  builtWorkout = buildWorkout(wbState.day, minutes);
+  renderWbSummary();
+  render();
+});
+renderWbDays();
+
+function render(){
+  if(builtWorkout){
+    resultCount.textContent = builtWorkout.items.length + ' exercises in this workout';
+    activeFilterLabel.textContent = builtWorkout.day.replace(/ \(.*\)/,'') + ' · time-boxed';
+    grid.style.display = 'grid';
+    emptyState.style.display = 'none';
+    grid.innerHTML = builtWorkout.items.map(e => cardHtml(e, '')).join('');
+    return;
+  }
+  const list = getFiltered();
+  resultCount.textContent = list.length + (list.length === 1 ? ' exercise' : ' exercises');
+  let labelBits = [];
+  if(state.group !== "All") labelBits.push(state.group);
+  if(state.sections.size) labelBits.push(Array.from(state.sections).join(', '));
+  activeFilterLabel.textContent = labelBits.join(' / ');
+
+  if(list.length === 0){
+    grid.style.display = 'none';
+    emptyState.style.display = 'block';
+    emptyText.textContent = state.query
+      ? `Nothing matches "${state.query}". Try a shorter term or clear the filters.`
+      : 'Nothing in this section yet. Try a different filter.';
+    return;
+  }
+  grid.style.display = 'grid';
+  emptyState.style.display = 'none';
+  grid.innerHTML = list.map(e => cardHtml(e, state.query)).join('');
+}
+
+grid.addEventListener('click', (ev) => {
+  const toggleBtn = ev.target.closest('[data-action="toggle"]');
+  if(toggleBtn){
+    const card = toggleBtn.closest('.card');
+    card.classList.toggle('expanded');
+    const label = toggleBtn.querySelector('.toggle-label');
+    label.textContent = card.classList.contains('expanded') ? 'Hide cues & watch-outs' : 'Show cues & watch-outs';
+    return;
+  }
+  const logBtn = ev.target.closest('[data-action="log"]');
+  if(logBtn){
+    const row = logBtn.closest('.log-row');
+    const exKey = row.dataset.logFor;
+    const wInput = row.querySelector('.log-weight');
+    const rInput = row.querySelector('.log-reps');
+    const weight = parseFloat(wInput.value);
+    const reps = parseInt(rInput.value, 10);
+    if(!weight || weight <= 0 || !reps || reps <= 0){
+      wInput.focus();
+      return;
+    }
+    // find the actual exercise name from data (exKey is normalized)
+    const match = DATA.find(x => normEx(x.exercise) === exKey);
+    setLast(match ? match.exercise : exKey, weight, reps);
+    const entry = getLast(match ? match.exercise : exKey);
+    // update every visible card for this exercise
+    document.querySelectorAll(`.log-row[data-log-for="${CSS.escape(exKey)}"]`).forEach(r => {
+      r.querySelector('.log-last').outerHTML = formatLast(entry);
+      r.querySelector('.log-weight').value = '';
+      r.querySelector('.log-reps').value = '';
+    });
+    logBtn.classList.add('saved');
+    logBtn.textContent = 'Logged';
+    setTimeout(() => { logBtn.classList.remove('saved'); logBtn.textContent = 'Log'; }, 1200);
+    return;
+  }
+});
+
+grid.addEventListener('keydown', (ev) => {
+  if(ev.key === 'Enter' && (ev.target.classList.contains('log-weight') || ev.target.classList.contains('log-reps'))){
+    const row = ev.target.closest('.log-row');
+    row.querySelector('[data-action="log"]').click();
+  }
+});
+
+searchInput.addEventListener('input', (ev) => {
+  state.query = ev.target.value.trim();
+  clearBtn.classList.toggle('show', !!state.query);
+  render();
+});
+clearBtn.addEventListener('click', () => {
+  state.query = '';
+  searchInput.value = '';
+  clearBtn.classList.remove('show');
+  searchInput.focus();
+  render();
+});
+
+renderGroupChips();
+renderSectionChips();
+renderProgrammeChips();
+renderEquipmentChip();
+render();
+
+// ---------- Backup / restore ----------
+const backupBtn = document.getElementById('backupBtn');
+const restoreBtn = document.getElementById('restoreBtn');
+const restoreFile = document.getElementById('restoreFile');
+const backupMsg = document.getElementById('backupMsg');
+
+function flashBackupMsg(text){
+  backupMsg.textContent = text;
+  setTimeout(() => { backupMsg.textContent = ''; }, 3500);
+}
+
+backupBtn.addEventListener('click', () => {
+  const count = Object.keys(LOGS).length;
+  if(count === 0){
+    flashBackupMsg('Nothing logged yet');
+    return;
+  }
+  const blob = new Blob([JSON.stringify(LOGS, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `rack-reference-weights-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  flashBackupMsg(`Saved ${count} exercise${count===1?'':'s'}`);
+});
+
+restoreBtn.addEventListener('click', () => restoreFile.click());
+
+restoreFile.addEventListener('change', (ev) => {
+  const file = ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const imported = JSON.parse(reader.result);
+      if(typeof imported !== 'object' || imported === null) throw new Error('bad format');
+      const beforeCount = Object.keys(LOGS).length;
+      Object.assign(LOGS, imported);
+      saveLogs(LOGS);
+      render(); // re-render cards with restored "Last:" values
+      const addedCount = Object.keys(LOGS).length;
+      flashBackupMsg(`Restored ${Object.keys(imported).length} exercise${Object.keys(imported).length===1?'':'s'}`);
+    } catch(e) {
+      flashBackupMsg('That file didn\'t look like a backup');
+    }
+  };
+  reader.readAsText(file);
+  restoreFile.value = '';
+});
+</script>
+</body>
+</html>
